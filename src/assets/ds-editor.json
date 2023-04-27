@@ -1,0 +1,24 @@
+{
+    "group1": {
+        "element1": {
+            "key": "text",
+            "type": "input",
+            "options": {
+                "label": "label",
+                "placeholder": "placeholder",
+                "required": true,
+                "type":"text"
+            }
+        },
+        "element2": {
+            "key": "text",
+            "type": "input",
+            "options": {
+                "label": "label 2",
+                "placeholder": "placeholder 2",
+                "required": true,
+                "type":"text"
+            }
+        }
+    }
+}
