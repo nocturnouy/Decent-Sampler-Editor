@@ -1,0 +1,11 @@
+section.ui-container {
+    width: 900px;
+    height: 450px;
+    border: 1px solid;
+    margin: 20px;
+    position: relative;
+    .ui-button {
+        position: absolute;
+        border:1px solid;
+    }
+}

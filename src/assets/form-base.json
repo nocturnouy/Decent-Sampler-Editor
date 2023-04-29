@@ -1,0 +1,39 @@
+[
+    {
+        "key":"ui",
+        "type": "section",
+        "label": "UI",
+        "elements": [
+            {
+                "key": "button",
+                "type": "array",
+                "label": "Button",
+                "properties": [{
+                    "prop1":"",
+                    "prop2":""
+                }]
+            },
+            {
+                "key": "slider",
+                "type": "array",
+                "label": "Slider",
+                "properties": [{
+                    "prop1":"",
+                    "prop2":""
+                }]
+            }
+        ]
+    },
+    {
+        "key":"groups",
+        "type": "section",
+        "label": "Sample Groups",
+        "elements": []
+    },
+    {
+        "key":"effects",
+        "type": "section",
+        "label": "Effects",
+        "elements": []
+    }
+]

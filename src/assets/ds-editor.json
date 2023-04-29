@@ -1,24 +1,73 @@
-{
-    "group1": {
-        "element1": {
-            "key": "text",
-            "type": "input",
-            "options": {
-                "label": "label",
-                "placeholder": "placeholder",
-                "required": true,
-                "type":"text"
-            }
-        },
-        "element2": {
-            "key": "text",
-            "type": "input",
-            "options": {
-                "label": "label 2",
-                "placeholder": "placeholder 2",
-                "required": true,
-                "type":"text"
-            }
+[
+    {
+        "key":"ui",
+        "type": "group",
+        "label": "UI",
+        "options": {
+            "elements": [
+                {
+                "key": "button",
+                "type": "array",
+                "label":"Button",
+                "options":{
+                    "properties":[
+                        {
+                            "key": "btnX",
+                            "type": "input",
+                            "options": {
+                                "label": "X",
+                                "placeholder": "",
+                                "required": true,
+                                "default":"0",
+                                "type":"text"
+                            }
+                        },
+                        {
+                            "key": "btnY",
+                            "type": "input",
+                            "options": {
+                                "label": "Y",
+                                "placeholder": "",
+                                "required": true,
+                                "default":"0",
+                                "type":"number"
+                            }
+                        }
+                    ]
+                } 
+                },
+                {
+                    "key": "slider",
+                    "type": "array",
+                    "label":"Slider",
+                    "options":{
+                        "properties":[
+                            {
+                                "key": "sliderX",
+                                "type": "input",
+                                "options": {
+                                    "label": "X",
+                                    "placeholder": "",
+                                    "required": true,
+                                    "default":"0",
+                                    "type":"number"
+                                }
+                            },
+                            {
+                                "key": "sliderY",
+                                "type": "input",
+                                "options": {
+                                    "label": "Y",
+                                    "placeholder": "",
+                                    "required": true,
+                                    "default":"0",
+                                    "type":"number"
+                                }
+                            }
+                        ]
+                    } 
+                }
+            ]
         }
     }
-}
+]

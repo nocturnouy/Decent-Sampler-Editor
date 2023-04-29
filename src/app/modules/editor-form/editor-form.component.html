@@ -1,0 +1,78 @@
+<h1>forms</h1>
+
+<form [formGroup]="myForm">
+
+    <ng-container formArrayName="ui">
+
+        <ng-container *ngFor="let element of  myForm.get('ui')['controls']; let i = index">
+            <div [formGroupName]="i">
+                label: {{myForm.value.ui[i].type}}
+                    <div *ngFor="let item of myForm.value.ui[i].properties | keyvalue; let i = index;">
+                        <div formGroupName="properties">
+                            <div [ngSwitch]="item.value">
+                                <div *ngSwitchCase="'0'">
+                                    {{item.key}}:<input [id]="i" type="number" formControlName="{{item.key}}">                  
+                                </div>
+                                <div *ngSwitchDefault>
+                                    {{item.key}}:<input [id]="i" type="text" formControlName="{{item.key}}">                  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <i icon class="delete-btn" (click)="deleteLesson(i, 'ui')">delete_forever</i>
+            </div>
+            
+        </ng-container>
+
+    </ng-container>
+
+
+
+
+<button (click)="addElement('button', 'ui')">add button</button>
+<button (click)="addElement('slider', 'ui')">add slider</button>
+    
+
+
+</form>
+
+<section class="ui-container"  >
+    <div *ngFor="let c of myForm.value.ui; let i=index;">
+       <div [ngSwitch]="c.type">
+            <div *ngSwitchCase="'button'">
+                <div class="ui-button" 
+                    id="{{i}}" 
+                    [cdkDragFreeDragPosition]="{x: c.properties.btnX, y: c.properties.btnY }"
+
+                    cdkDrag 
+                    cdkDragBoundary=".ui-container"
+                    (cdkDragEnded)="dragEnd($event)"
+                    >
+                    <div class="example-handle" cdkDragHandle>
+                        <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        </svg>
+                    </div>
+                    {{c.properties.btnText}}</div>
+            </div>
+            <div *ngSwitchCase="'slider'">
+                <div class="ui-slider">{{c.properties}}</div>
+            </div>
+            <div *ngSwitchDefault>
+                <div class="ui-button">none</div>
+            </div>
+       </div>
+    </div>
+</section>
+
+<div class="example-box" cdkDrag>
+  I can only be dragged using the handle
+
+  
+</div>
+
+
+
+<br><br>
+<textarea id="result"style="width:900px; height:600px"></textarea>>
