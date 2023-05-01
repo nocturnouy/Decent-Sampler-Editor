@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
-import { SimpleChange } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 
@@ -17,12 +17,13 @@ export class EditorFormComponent implements OnInit {
 
   Object = Object;
   myForm: FormGroup;
+  fileUrl;
 
 
 
 
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
     this.myForm = this.fb.group({
       uiProperties: this.fb.group({
         width:812,
@@ -31,7 +32,7 @@ export class EditorFormComponent implements OnInit {
       ui: this.fb.array([]),
       groups: this.fb.array([]),
       effects: this.fb.array([])
-    }, { updateOn: 'blur' });
+    }, { updateOn: 'submit' });
 
 
 
@@ -71,7 +72,7 @@ export class EditorFormComponent implements OnInit {
 
   getProperties(key) {
     let properties: any;
-    if (key === 'button') {
+    if (key === 'knob') {
       properties = this.fb.group({
         x: 0,
         y: 0,
@@ -123,7 +124,7 @@ export class EditorFormComponent implements OnInit {
   async submitForm(x) {
     let resultCont = document.getElementById('result');
     let formValue = x;
-    console.log(x)
+    //console.log(x)
     resultCont.textContent = `
     <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.0.0">
@@ -173,12 +174,19 @@ export class EditorFormComponent implements OnInit {
     `
   }
 
-  ngOnInit() : void {
-   this.submitForm(this.myForm.value)
+  fileDownload() {
+    document.getElementById('submit').click()
+
+    const data = document.getElementById('result').textContent;
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+
+    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
 
 
 
-
+  ngOnInit() : void {
+    this.submitForm(this.myForm.value);    
+  }
 
 }

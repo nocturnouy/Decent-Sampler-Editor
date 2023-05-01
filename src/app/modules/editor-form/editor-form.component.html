@@ -1,11 +1,11 @@
 
-
 <form [formGroup]="myForm">
-
     <section class="ui-section">
 
         <div class="ui-properties">
             <div formGroupName="uiProperties">
+                <span>UI Properties</span>
+                <br>
                 Width: <input formControlName="width"  type="number" placeholder="default: 812">
                 Height: <input formControlName="height"  type="number" placeholder="default: 375">
             </div>
@@ -13,7 +13,7 @@
             <ng-container formArrayName="ui" class="ui-elements">
                 <span>UI Elements</span>
                 <br>
-                <button (click)="addElement('button', 'ui')">add button</button>
+                <button (click)="addElement('knob', 'ui')">add button</button>
                 <button (click)="addElement('slider', 'ui')">add slider</button>
                 <div class="ui-elements-list">
                     <ng-container *ngFor="let element of  myForm.get('ui')['controls']; let i = index">
@@ -36,6 +36,8 @@
                                     </div>
                                 </div>
                             <i class="delete-btn" (click)="deleteItem(i, 'ui')">delete_forever</i>
+                            <button type="submit">save</button>
+
                         </div>
                         
                     </ng-container>
@@ -53,7 +55,7 @@
         <div class="ui-display" [style.width]="myForm.value.uiProperties.width+'px'" [style.height]="myForm.value.uiProperties.height - 35 +'px'" >
             <div *ngFor="let c of myForm.value.ui; let i=index;">
             <div [ngSwitch]="c.type">
-                    <div *ngSwitchCase="'button'">
+                    <div *ngSwitchCase="'knob'">
                         <div class="ui-button" 
                             id="{{i}}" 
                             cdkDrag 
@@ -103,6 +105,10 @@
         
 
     </section>
+<button id="submit" type="submit">Update Code</button>
+<br>
+<a [href]="fileUrl" download="file.dspreset" (click)="fileDownload()">Download .dsPreset</a>
+
 
 </form>
 
