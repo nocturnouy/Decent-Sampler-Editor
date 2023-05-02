@@ -1,29 +1,54 @@
 
-<form [formGroup]="myForm">
-    <section class="ui-section">
 
+
+
+<form [formGroup]="myForm">
+    <mat-card class="ui-section">
+        <mat-card-header>
+            <mat-card-title>UI</mat-card-title>
+        </mat-card-header>
         <div class="ui-properties">
             <div formGroupName="uiProperties">
-                <span>UI Properties</span>
-                <br>
+                <mat-card-header>
+                    <mat-card-subtitle>UI Properties</mat-card-subtitle>
+                </mat-card-header>
+                
                 Width: <input formControlName="width"  type="number" placeholder="default: 812">
                 Height: <input formControlName="height"  type="number" placeholder="default: 375">
             </div>
 
             <ng-container formArrayName="ui" class="ui-elements">
-                <span>UI Elements</span>
-                <br>
-                <button (click)="addElement('knob', 'ui')">add button</button>
-                <button (click)="addElement('slider', 'ui')">add slider</button>
-                <div class="ui-elements-list">
+                <mat-card-header>
+                    <mat-card-subtitle>UI Elements</mat-card-subtitle>
+
+                    <button mat-icon-button color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <mat-menu #addUI="matMenu">
+                        <button mat-menu-item (click)="addElement('knob', 'ui')">Button</button>
+                        <button mat-menu-item (click)="addElement('keyboard', 'ui')">Key Color</button>
+                    </mat-menu>
+                </mat-card-header>
+                
+                <mat-accordion>
                     <ng-container *ngFor="let element of  myForm.get('ui')['controls']; let i = index">
-                        <div [formGroupName]="i">
-                            Type: {{myForm.value.ui[i].type}}
+                        <mat-expansion-panel [formGroupName]="i">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title><b>{{i + 1}} </b>- Type: {{myForm.value.ui[i].properties.label || myForm.value.ui[i].type}}</mat-panel-title>
+                            </mat-expansion-panel-header>
                                 <div *ngFor="let item of myForm.value.ui[i].properties | keyvalue; let i = index;">
                                     <div formGroupName="properties">
                                         <div [ngSwitch]="checkType(item.value)">
                                             <div *ngSwitchCase="'string'">
-                                                {{item.key}}:<input [id]="i" type="text" formControlName="{{item.key}}">                  
+                                                <div [ngSwitch]="item.key">
+                                                    <div *ngSwitchCase="'color'">
+                                                        {{item.key}}:<input [id]="i" type="text" formControlName="{{item.key}}" (colorPicker)="item.value" (colorPickerChange)="onEventLog(item.value=$event)" [value]="item.value">                  
+                                                    </div>
+                                                    <div *ngSwitchDefault>
+                                                        {{item.key}}:<input [id]="i" type="text" formControlName="{{item.key}}">                  
+                                                    </div>
+                                                </div>
+                                                    
                                             </div>
                                             <div *ngSwitchCase="'number'">
                                                 {{item.key}}:<input [id]="i" type="number" step=".1" formControlName="{{item.key}}">                  
@@ -35,13 +60,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            <i class="delete-btn" (click)="deleteItem(i, 'ui')">delete_forever</i>
-                            <button type="submit">save</button>
+                            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete_forever" (click)="deleteItem(i, 'ui')"></mat-icon>
 
-                        </div>
+                        </mat-expansion-panel>
                         
                     </ng-container>
-                </div>
+                </mat-accordion>
                 
 
             </ng-container>
@@ -92,28 +116,36 @@
 
                             </div></div>
                     </div>
-                    <div *ngSwitchCase="'slider'">
-                        <div class="ui-slider">{{c.properties}}</div>
-                    </div>
+
                     <div *ngSwitchDefault>
-                        <div class="ui-button">none</div>
+                        <!-- display nothing if its not in the list -->
                     </div>
             </div>
             </div>
         </div>
 
-        
+        <app-piano-roll></app-piano-roll>
 
-    </section>
-<button id="submit" type="submit">Update Code</button>
-<br>
-<a [href]="fileUrl" download="file.dspreset" (click)="fileDownload()">Download .dsPreset</a>
 
+
+    </mat-card>
+    <br>
+    <mat-card>
+        <mat-card-actions align="end">
+                <button mat-stroked-button id="submit" type="submit">Update Code</button>
+                <a mat-stroked-button (click)="colorKeys(myForm.value.ui)">Color</a>
+                <a mat-stroked-button color="primary" [href]="fileUrl" download="file.dspreset" (click)="fileDownload()">Download .dsPreset</a>
+        </mat-card-actions>
+    </mat-card>
+
+    
 
 </form>
 
 <pre>
+<mat-card>
   <code [highlight]="" id="result"></code>
+</mat-card>
 </pre>
 
 <!-- <br><br>

@@ -19,6 +19,7 @@ export class EditorFormComponent implements OnInit {
   myForm: FormGroup;
   fileUrl;
 
+  color = '#000000'
 
 
 
@@ -93,6 +94,13 @@ export class EditorFormComponent implements OnInit {
         sliderY: 0
       })
     }
+    else if (key === 'keyboard') {
+      properties = this.fb.group({
+        loNote: 1,
+        hiNote: 12,
+        color: 'FF0000FF'
+      })
+    }
     return properties
   }
 
@@ -121,6 +129,21 @@ export class EditorFormComponent implements OnInit {
     debugger
   }
   
+  colorKeys(x) {
+    var keys = x.filter(key => key.type === 'keyboard')
+
+    keys.map(key => {
+      let loNote = key.properties.loNote
+      let hiNote = key.properties.hiNote
+      let color = key.properties.color
+
+      for (let step = loNote; step < hiNote; step++) {
+        console.log(color)
+        document.getElementById('cc-' + step).setAttribute('style', 'background-color: #' + color)
+      }
+    })
+  }
+
   async submitForm(x) {
     let resultCont = document.getElementById('result');
     let formValue = x;
@@ -130,7 +153,7 @@ export class EditorFormComponent implements OnInit {
     <DecentSampler minVersion="1.0.0">
       <ui width="${formValue.uiProperties.width}" height="${formValue.uiProperties.height}" layoutMode="relative" bgMode="top_left">
       <tab name="main"> 
-        ${formValue.ui.map(element => {
+        ${formValue.ui.map(element =>  {
           const el = `<labeled-knob 
                         x="${element.properties.x}" 
                         y="${element.properties.y}" 
@@ -147,9 +170,18 @@ export class EditorFormComponent implements OnInit {
                         <binding type="amp" level="instrument" position="0" parameter="ENV_ATTACK" />
                       </labeled-knob>
           `
-        return el
+          return element.type === 'knob' ? el : ''
         }).join('')}
       </tab>
+       <keyboard>
+          ${formValue.ui.map(element =>  {
+            const el = `<color 
+                          loNote="${element.properties.loNote}" 
+                          hiNote="${element.properties.hiNote}" 
+                          color="${(element.properties.color.slice(6,8) + element.properties.color.slice(0,6))}" />`
+            return element.type === 'keyboard' ? el :''
+          } ).join('')}
+        </keyboard>
       </ui>
       <groups attack="0.000" decay="25" sustain="1.0" release="0.430" volume="-3dB">
         <group>
