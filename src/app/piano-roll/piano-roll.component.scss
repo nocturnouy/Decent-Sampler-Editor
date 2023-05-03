@@ -1,0 +1,32 @@
+.piano-keys {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
+    height: 70px;
+
+    i {
+        display:inline-block;
+        height:50px;
+        width:10px;
+        border:1px solid;
+        border-width:1px 0 1px 1px;
+        &:nth-last-child(1) {
+            border-right-width:1px;
+        }
+    }
+
+    i:nth-child(12n - 10),
+    i:nth-child(12n - 8),
+    i:nth-child(12n - 5),
+    i:nth-child(12n - 3),
+    i:nth-child(12n - 1){
+        background:black;
+        position:absolute;
+        transform:scale(0.5) translate(-9px, -25px)
+    }
+
+}
+

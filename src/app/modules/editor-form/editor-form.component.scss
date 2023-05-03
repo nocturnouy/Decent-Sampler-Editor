@@ -1,0 +1,76 @@
+.ui-section {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .mat-mdc-card-header {
+        flex: 0 0 100%;
+    }
+}
+
+.ui-properties {
+
+}
+
+.ui-display {
+    border: 1px solid;
+    margin: 20px;
+    position: relative;
+    background-image: url(../../../assets/bg.png);
+    background-size: 100%;
+    
+}
+.example-handle {
+    position: absolute;
+    opacity: 0;
+    transition: all 250ms;
+    width: 100%;
+    bottom: -22px;
+    transform: scale(0.2);
+    svg {
+        width: 100%;
+        opacity: 0.6;
+    }
+}
+.ui-button {
+    position: absolute;
+    transition: all 50ms ease;
+    width: 90px;
+    height: 90px;
+    &:active {
+       // background-color: blue;
+    }
+    &:hover .example-handle {
+        opacity: 1;
+        transform: scale(0.4);
+    }
+    .knob {
+        padding: 16px 0 0;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        font-family: sans-serif;
+        display: block;
+        label {
+            display: block;
+            line-height: 20px;
+        }
+        svg {
+            width: 55px;
+            height: auto;
+        }
+    }
+}
+
+
+
+.align-icons .mat-expansion-panel-header-description {
+    justify-content: flex-end;
+    margin-right: 0;
+    flex-grow: 0;
+}
+
+.group-elements {
+    display: block;
+    width: 100%;
+}

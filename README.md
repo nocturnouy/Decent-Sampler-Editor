@@ -1,5 +1,15 @@
 # DecentSamplerEditor
 
+Web based preset generator for Decent Sampler
+It allows users to generate a .dspreset file to used with Decent Sampler
+
+THIS PROJECT IS STILL IN EARLY DEVELOPMENT
+
+For more information about Decent Sampler please visit the [official DS website](https://www.decentsamples.com)
+
+
+-----------
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.7.
 
 ## Development server
