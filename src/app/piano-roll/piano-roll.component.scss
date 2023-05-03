@@ -1,4 +1,12 @@
 .piano-keys {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
+    height: 70px;
+
     i {
         display:inline-block;
         height:50px;

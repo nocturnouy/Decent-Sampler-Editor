@@ -1,5 +1,11 @@
 .ui-section {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .mat-mdc-card-header {
+        flex: 0 0 100%;
+    }
 }
 
 .ui-properties {
@@ -54,5 +60,13 @@
             height: auto;
         }
     }
+}
+
+
+
+.align-icons .mat-expansion-panel-header-description {
+    justify-content: flex-end;
+    margin-right: 0;
+    flex-grow: 0;
 }
 

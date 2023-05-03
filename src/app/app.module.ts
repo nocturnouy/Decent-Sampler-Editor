@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { ColorPickerModule } from 'ngx-color-picker';
+import {MatInputModule} from '@angular/material/input';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,7 +38,7 @@ import { PianoRollComponent } from './piano-roll/piano-roll.component';
     MatMenuModule,
     MatIconModule,
     MatExpansionModule,
-    ColorPickerModule
+    MatInputModule
     
   ],
   providers: [{

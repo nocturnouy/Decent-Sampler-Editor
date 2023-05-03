@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
 import { DomSanitizer } from '@angular/platform-browser';
 
+import {MatAccordion} from '@angular/material/expansion';
+
+
+declare function install(): any;
+declare var jscolor: any;
 
 
 
@@ -13,13 +18,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class EditorFormComponent implements OnInit {
 
-
+  @ViewChild(MatAccordion) accordion: MatAccordion;
 
   Object = Object;
   myForm: FormGroup;
   fileUrl;
 
-  color = '#000000'
 
 
 
@@ -29,21 +33,23 @@ export class EditorFormComponent implements OnInit {
       uiProperties: this.fb.group({
         width:812,
         height:375
-      }),
-      ui: this.fb.array([]),
-      groups: this.fb.array([]),
+      }, { updateOn: 'blur' }),
+      ui: this.fb.array([],{ updateOn: 'submit' }),
+      groups: this.fb.array([],{ updateOn: 'submit' }),
       effects: this.fb.array([])
-    }, { updateOn: 'submit' });
+    }
+    
+    );
 
-
-
-    this.myForm.valueChanges.subscribe( x => this.submitForm(x))
 
   }
 
 
   get ui(): FormArray {
     return this.myForm.get('ui') as FormArray;
+  }
+  get groups(): FormArray {
+    return this.myForm.get('groups') as FormArray;
   }
 
 
@@ -96,9 +102,17 @@ export class EditorFormComponent implements OnInit {
     }
     else if (key === 'keyboard') {
       properties = this.fb.group({
-        loNote: 1,
-        hiNote: 12,
+        loNote: 0,
+        hiNote: 11,
         color: 'FF0000FF'
+      })
+    }
+    else if (key === 'sample') {
+      properties = this.fb.group({
+        loNote: 0,
+        hiNote:127,
+        rootNote:60,
+        path: "samples/C4.wav"
       })
     }
     return properties
@@ -120,6 +134,7 @@ export class EditorFormComponent implements OnInit {
       x: Math.round(position.x + element.offsetLeft),
       y: Math.round(position.y + element.offsetTop)
     })
+    this.submitForm(this.myForm.value)
   }
 
   checkType(key) {
@@ -137,7 +152,7 @@ export class EditorFormComponent implements OnInit {
       let hiNote = key.properties.hiNote
       let color = key.properties.color
 
-      for (let step = loNote; step < hiNote; step++) {
+      for (let step = loNote; step <= hiNote; step++) {
         console.log(color)
         document.getElementById('cc-' + step).setAttribute('style', 'background-color: #' + color)
       }
@@ -145,16 +160,22 @@ export class EditorFormComponent implements OnInit {
   }
 
   async submitForm(x) {
+    document.getElementById('submit').click()
+    
     let resultCont = document.getElementById('result');
     let formValue = x;
-    //console.log(x)
+
+    this.colorKeys(this.myForm.value.ui)
+
     resultCont.textContent = `
     <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.0.0">
       <ui width="${formValue.uiProperties.width}" height="${formValue.uiProperties.height}" layoutMode="relative" bgMode="top_left">
       <tab name="main"> 
         ${formValue.ui.map(element =>  {
-          const el = `<labeled-knob 
+          let el:any
+          if(element.type === 'knob'){
+            el = `<labeled-knob 
                         x="${element.properties.x}" 
                         y="${element.properties.y}" 
                         width="90" 
@@ -170,23 +191,27 @@ export class EditorFormComponent implements OnInit {
                         <binding type="amp" level="instrument" position="0" parameter="ENV_ATTACK" />
                       </labeled-knob>
           `
-          return element.type === 'knob' ? el : ''
+          }
+          return  el? el : ''
         }).join('')}
       </tab>
        <keyboard>
           ${formValue.ui.map(element =>  {
-            const el = `<color 
+            let el:any
+            if(element.type === 'keyboard'){
+              el = `<color 
                           loNote="${element.properties.loNote}" 
                           hiNote="${element.properties.hiNote}" 
-                          color="${(element.properties.color.slice(6,8) + element.properties.color.slice(0,6))}" />`
-            return element.type === 'keyboard' ? el :''
+                          color="${(element.properties.color.slice(6,8) + element.properties.color.slice(0,6))}" />
+                          `
+            }
+            return el? el: ''
           } ).join('')}
         </keyboard>
       </ui>
       <groups attack="0.000" decay="25" sustain="1.0" release="0.430" volume="-3dB">
         <group>
-          <!-- <sample loNote="21" hiNote="21" rootNote="21" path=""
-                  length="805888"/> -->
+          <sample loNote="0" hiNote="127" rootNote="21" path="samples/C4.wav"/>
         </group>
       </groups>
       <effects>
@@ -204,6 +229,13 @@ export class EditorFormComponent implements OnInit {
       </midi>
     </DecentSampler>
     `
+
+    console.log('submitted')
+    
+    jscolor.install()
+
+
+
   }
 
   fileDownload() {
@@ -214,11 +246,15 @@ export class EditorFormComponent implements OnInit {
 
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
+  ngOnInit() : void { 
 
-
-
-  ngOnInit() : void {
-    this.submitForm(this.myForm.value);    
+    
   }
+
+  
+  displayPicker() {
+    jscolor.install()
+  }
+
 
 }
