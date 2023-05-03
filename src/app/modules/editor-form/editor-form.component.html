@@ -29,16 +29,14 @@
             <ng-container formArrayName="ui" class="ui-elements">
                 <mat-card-header>
                     <mat-card-subtitle>UI Elements</mat-card-subtitle>
-
+                </mat-card-header>
                     <button mat-icon-button color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
                         <mat-icon>add</mat-icon>
                     </button>
                     <mat-menu #addUI="matMenu">
-                        <button mat-menu-item (click)="addElement('knob', 'ui')">Button</button>
+                        <button mat-menu-item (click)="addElement('knob', 'ui')">Knob</button>
                         <button mat-menu-item (click)="addElement('keyboard', 'ui')">Key Color</button>
-                    </mat-menu>
-                </mat-card-header>
-                
+                    </mat-menu>                
                 <mat-accordion class="example-headers-align">
                     <ng-container *ngFor="let element of  myForm.get('ui')['controls']; let i = index">
                         <script>
@@ -163,52 +161,58 @@
         <mat-card-header>
             <mat-card-title>Samples</mat-card-title>
         </mat-card-header>
-        <button mat-menu-item (click)="addElement('sample', 'groups')">add sample</button>
 
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add element to ui">
+            <mat-icon>add</mat-icon>
+        </button>
+        <mat-menu #addSample="matMenu">
+            <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
+        </mat-menu>
 
+<br>
 
+<section formArrayName="groups" class="group-elements">
+    <mat-accordion class="example-headers-align">
+        <ng-container *ngFor="let element of  myForm.get('groups')['controls']; let i = index">
+            <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(myForm.value)" hideToggle>
+                <mat-expansion-panel-header class="align-icons">
+                    <mat-panel-title><b>{{i + 1}} </b>- Path: {{myForm.value.groups[i].properties.path}}</mat-panel-title>
+                    <mat-panel-description>
 
-        <!-- <mat-accordion class="example-headers-align">
-                    <ng-container *ngFor="let element of  myForm.get('groups')['controls']; let i = index">
-                        <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(myForm.value)" hideToggle>
-                            <mat-expansion-panel-header class="align-icons">
-                                <mat-panel-title><b>{{i + 1}} </b>- Path: {{myForm.value.groups[i].properties.path}}</mat-panel-title>
-                                <mat-panel-description>
+                        <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
 
-                                    <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
+                        <button mat-icon-button (click)="deleteItem(i, 'groups')"><mat-icon>delete_forever</mat-icon></button>
+                    </mat-panel-description>
 
-                                    <button mat-icon-button (click)="deleteItem(i, 'groups')"><mat-icon>delete_forever</mat-icon></button>
-                                </mat-panel-description>
-
-                            </mat-expansion-panel-header>
-                                <div *ngFor="let item of myForm.value.groups[i].properties | keyvalue; let i = index;">
-                                    <div formGroupName="properties">
-                                        <div [ngSwitch]="checkType(item.value)">
-                                            
-                                            <mat-form-field *ngSwitchCase="'number'">
-                                                <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="number" step="1" formControlName="{{item.key}}">  
-                                            </mat-form-field>
-                                        
-                                            <mat-form-field *ngSwitchDefault>
-                                                <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                            </mat-form-field>                
-                                            
-
-                                        </div>
-                                    </div>
-                                </div>
+                </mat-expansion-panel-header>
+                    <div *ngFor="let item of myForm.value.groups[i].properties | keyvalue; let i = index;">
+                        <div formGroupName="properties">
+                            <div [ngSwitch]="checkType(item.value)">
+                                
+                                <mat-form-field *ngSwitchCase="'number'">
+                                    <mat-label>{{item.key}}</mat-label>
+                                    <input matInput id="i" type="number" step="1" formControlName="{{item.key}}">  
+                                </mat-form-field>
                             
+                                <mat-form-field *ngSwitchDefault>
+                                    <mat-label>{{item.key}}</mat-label>
+                                    <input matInput id="i" type="text" formControlName="{{item.key}}">
+                                </mat-form-field>                
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                
 
 
 
-                        </mat-expansion-panel>
-                        
-                    </ng-container>
-                </mat-accordion> -->
+            </mat-expansion-panel>
+            
+        </ng-container>
+    </mat-accordion>
 
-
+</section>
 
 
     </mat-card>

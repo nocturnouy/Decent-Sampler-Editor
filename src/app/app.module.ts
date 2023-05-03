@@ -47,8 +47,9 @@ import { PianoRollComponent } from './piano-roll/piano-roll.component';
       // fullLibraryLoader: () => import('highlight.js')
       coreLibraryLoader: () => import('highlight.js/lib/core'),
       languages: {
-        // css: () => import('highlight.js/lib/languages/css'),
+        //css: () => import('highlight.js/lib/languages/css'),
         xml: () => import('highlight.js/lib/languages/xml')
+
       }
     }
   }],

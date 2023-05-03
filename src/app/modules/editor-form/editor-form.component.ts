@@ -122,6 +122,7 @@ export class EditorFormComponent implements OnInit {
 
   deleteItem(index: number, parent) {
     this.sectionElements(parent).removeAt(index);
+    this.submitForm(this.myForm.value)
   }
 
   dragEnd($event: CdkDragEnd) {
@@ -146,6 +147,9 @@ export class EditorFormComponent implements OnInit {
   
   colorKeys(x) {
     var keys = x.filter(key => key.type === 'keyboard')
+
+    Array.from(document.querySelectorAll('.piano-keys i'))
+      .forEach(e => e.removeAttribute('style'));
 
     keys.map(key => {
       let loNote = key.properties.loNote
@@ -211,7 +215,20 @@ export class EditorFormComponent implements OnInit {
       </ui>
       <groups attack="0.000" decay="25" sustain="1.0" release="0.430" volume="-3dB">
         <group>
-          <sample loNote="0" hiNote="127" rootNote="21" path="samples/C4.wav"/>
+          ${formValue.groups.map(element => {
+            let el: any
+            if (element.type === 'sample') {
+              el = `<sample 
+                          loNote="${element.properties.loNote}" 
+                          hiNote="${element.properties.hiNote}" 
+                          rootNote="${element.properties.rootNote}" 
+                          path="${element.properties.path}" 
+                          
+                          />
+                          `
+            }
+            return el ? el : ''
+          }).join('')}
         </group>
       </groups>
       <effects>
