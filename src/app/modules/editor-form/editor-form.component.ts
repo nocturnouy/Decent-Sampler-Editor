@@ -21,18 +21,23 @@ export class EditorFormComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
 
   Object = Object;
-  myForm: FormGroup;
+  editorForm: FormGroup;
   fileUrl;
 
+
+
+  //variables for layout
+  uiDisplayx: any;
+  uiDisplayy: any;
 
 
 
 
   constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
-    this.myForm = this.fb.group({
+    this.editorForm = this.fb.group({
       uiProperties: this.fb.group({
-        width:812,
-        height:375
+        width: [{ value: 812, disabled: true}],
+        height: [{ value: 375, disabled: true}]
       }, { updateOn: 'blur' }),
       ui: this.fb.array([],{ updateOn: 'submit' }),
       groups: this.fb.array([],{ updateOn: 'submit' }),
@@ -46,31 +51,33 @@ export class EditorFormComponent implements OnInit {
 
 
   get ui(): FormArray {
-    return this.myForm.get('ui') as FormArray;
+    return this.editorForm.get('ui') as FormArray;
   }
   get groups(): FormArray {
-    return this.myForm.get('groups') as FormArray;
+    return this.editorForm.get('groups') as FormArray;
+  }
+  get effects(): FormArray {
+    return this.editorForm.get('groups') as FormArray;
   }
 
 
 
 
   getPropertyList(key, parent) {
-    console.log(this.myForm.controls[parent].value[key].properties)
-    return this.myForm.controls[parent].value[key].properties as FormArray;
+    console.log(this.editorForm.controls[parent].value[key].properties)
+    return this.editorForm.controls[parent].value[key].properties as FormArray;
   }
   sectionElements(key) {
-    return this.myForm.controls[key] as FormArray;
+    return this.editorForm.controls[key] as FormArray;
   }
 
 
 
-  addElement(key,parent) {
+  async addElement(key,parent) {
     let element: any = this.fb.group({
       type: key,
-      properties: this.getProperties(key)
+      properties: await this.getProperties(key)
     })
-    
     const array = this.sectionElements(parent);
     array.push(element)
     
@@ -92,29 +99,39 @@ export class EditorFormComponent implements OnInit {
         //type:"float" ,
         minValue:0.0 ,
         maxValue:1.0 ,
-        value:0.1 
+        value:0.1,
+        binding: this.fb.group({
+          control1: '',
+          control2: '',
+          control3: ''
+        }) 
       })
     } else if (key === 'slider') {
       properties = this.fb.group({
         sliderX: 0,
         sliderY: 0
       })
-    }
-    else if (key === 'keyboard') {
+    } else if (key === 'keyboard') {
       properties = this.fb.group({
         loNote: 0,
         hiNote: 11,
         color: 'FF0000FF'
       })
-    }
-    else if (key === 'sample') {
+    } else if (key === 'sample') {
       properties = this.fb.group({
         loNote: 0,
         hiNote:127,
         rootNote:60,
         path: "samples/C4.wav"
       })
+    } else if (key === 'reverb') {
+      properties = this.fb.group({
+        roomSize:0.7,
+        damping:0.3,
+        wetLevel:1
+      })
     }
+
     return properties
   }
 
@@ -122,7 +139,7 @@ export class EditorFormComponent implements OnInit {
 
   deleteItem(index: number, parent) {
     this.sectionElements(parent).removeAt(index);
-    this.submitForm(this.myForm.value)
+    this.submitForm(this.editorForm.value)
   }
 
   dragEnd($event: CdkDragEnd) {
@@ -135,7 +152,7 @@ export class EditorFormComponent implements OnInit {
       x: Math.round(position.x + element.offsetLeft),
       y: Math.round(position.y + element.offsetTop)
     })
-    this.submitForm(this.myForm.value)
+    this.submitForm(this.editorForm.value)
   }
 
   checkType(key) {
@@ -169,12 +186,13 @@ export class EditorFormComponent implements OnInit {
     let resultCont = document.getElementById('result');
     let formValue = x;
 
-    this.colorKeys(this.myForm.value.ui)
-
+    this.colorKeys(this.editorForm.value.ui)
+    
     resultCont.textContent = `
     <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.0.0">
-      <ui width="${formValue.uiProperties.width}" height="${formValue.uiProperties.height}" layoutMode="relative" bgMode="top_left">
+      <!-- TODO: once width and height for the ui gets enabled I should replace this with the get value of those controls -->
+      <ui width="${this.uiDisplayx}" height="${this.uiDisplayy}" layoutMode="relative" bgMode="top_left">
       <tab name="main"> 
         ${formValue.ui.map(element =>  {
           let el:any
@@ -192,7 +210,13 @@ export class EditorFormComponent implements OnInit {
                         minValue="${element.properties.minValue}" 
                         maxValue="${element.properties.maxValue}" 
                         value="${element.properties.value}">
-                        <binding type="amp" level="instrument" position="0" parameter="ENV_ATTACK" />
+                        <binding 
+                          type="effect" 
+                          level="instrument" 
+                          position="0" 
+                          effectIndex="0"
+                          parameter="FX_REVERB_WET_LEVEL" 
+                          />
                       </labeled-knob>
           `
           }
@@ -232,9 +256,19 @@ export class EditorFormComponent implements OnInit {
         </group>
       </groups>
       <effects>
-        <effect type="lowpass" frequency="22000.0"/>
-        <effect type="chorus"  mix="0.0" modDepth="0.2" modRate="0.2" />
-        <effect type="reverb" wetLevel="0.5"/>
+       ${formValue.effects.map(element => {
+         let el: any
+         if (element.type === 'reverb') {
+           el = `<effect type="reverb" 
+                         roomSiz="${element.properties.roomSiz}" 
+                         damping="${element.properties.damping}" 
+                         wetLevel="${element.properties.wetLevel}" 
+                          
+                          />
+                          `
+         }
+         return el ? el : ''
+       }).join('')}
       </effects>
       <midi>
         <!-- This causes MIDI CC 1 to control the 4th knob (cutoff) -->
@@ -246,12 +280,8 @@ export class EditorFormComponent implements OnInit {
       </midi>
     </DecentSampler>
     `
-
-    console.log('submitted')
-    
+   
     jscolor.install()
-
-
 
   }
 
@@ -264,7 +294,12 @@ export class EditorFormComponent implements OnInit {
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
   ngOnInit() : void { 
+    //setting values for layout
+    this.uiDisplayx = this.editorForm.get('uiProperties.width').value
+    this.uiDisplayy = this.editorForm.get('uiProperties.height').value
 
+
+   
     
   }
 

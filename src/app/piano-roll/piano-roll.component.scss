@@ -10,9 +10,10 @@
     i {
         display:inline-block;
         height:50px;
-        width:10px;
         border:1px solid;
         border-width:1px 0 1px 1px;
+        width: calc(100% / 80) !important;
+        box-sizing: border-box;
         &:nth-last-child(1) {
             border-right-width:1px;
         }
@@ -23,7 +24,7 @@
     i:nth-child(12n - 5),
     i:nth-child(12n - 3),
     i:nth-child(12n - 1){
-        background:black;
+        background:black !important;
         position:absolute;
         transform:scale(0.5) translate(-9px, -25px)
     }

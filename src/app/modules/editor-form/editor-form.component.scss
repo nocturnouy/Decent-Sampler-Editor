@@ -1,16 +1,14 @@
-.ui-section {
+.section {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 20px;
     .mat-mdc-card-header {
         flex: 0 0 100%;
     }
 }
 
-.ui-properties {
-
-}
 
 .ui-display {
     border: 1px solid;
@@ -37,9 +35,6 @@
     transition: all 50ms ease;
     width: 90px;
     height: 90px;
-    &:active {
-       // background-color: blue;
-    }
     &:hover .example-handle {
         opacity: 1;
         transform: scale(0.4);

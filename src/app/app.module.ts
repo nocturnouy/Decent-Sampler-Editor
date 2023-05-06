@@ -8,7 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import {MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,7 +39,8 @@ import { PianoRollComponent } from './piano-roll/piano-roll.component';
     MatMenuModule,
     MatIconModule,
     MatExpansionModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltipModule
     
   ],
   providers: [{
