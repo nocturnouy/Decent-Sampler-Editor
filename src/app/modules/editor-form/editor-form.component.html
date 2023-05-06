@@ -9,13 +9,13 @@
                     <mat-card-subtitle>UI Properties</mat-card-subtitle>
                 </mat-card-header>
                 
-                <mat-form-field matTooltip="Disabled temporarily"  matTooltipPosition="above">
+                <mat-form-field matTooltip="{{getTooltip('uiWidth')}}"  matTooltipPosition="above">
                     <mat-label>Width</mat-label>
                     <!-- <input matInput formControlName="width"  type="number" placeholder="default: 812" value="812"> -->
                     <input matInput type="number" placeholder="default: 812" formControlName="width">
                 </mat-form-field>
                 
-                <mat-form-field matTooltip="Disabled temporarily"  matTooltipPosition="above">
+                <mat-form-field matTooltip="{{getTooltip('uiHeight')}}"   matTooltipPosition="above">
                     <mat-label>Height</mat-label>
                     <!-- <input matInput formControlName="height"  type="number" placeholder="default: 375" value="375"> -->
                     <input matInput type="number" placeholder="default: 375" formControlName="height">
@@ -51,43 +51,57 @@
                             </mat-expansion-panel-header>
                                 <div *ngFor="let item of editorForm.value.ui[i].properties | keyvalue; let i = index;">
                                     <div formGroupName="properties">
-                                        <div [ngSwitch]="checkType(item.value)">
-                                            <div *ngSwitchCase="'object'">
-                                                <div formGroupName="">
-                                                    <label>Binding</label>
-                                                    <div *ngFor="let bind of item.value | keyvalue; let i = index;">
-                                                        <mat-form-field>
-                                                            <mat-label>{{bind.key}}</mat-label>
-                                                            <input matInput id="i" type="text" formControlName="{{bind.key}}">
-                                                        </mat-form-field>
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                            <div *ngSwitchCase="'string'">
-                                                <div [ngSwitch]="item.key">
-                                                    <mat-form-field *ngSwitchCase="'color'">
-                                                        <mat-label>{{item.key}}</mat-label>
-                                                        <input matInput id="i" type="text" formControlName="{{item.key}}" data-jscolor="{preset: 'dark', hash: false}">
-                                                    </mat-form-field>
+                                        <div [ngSwitch]="item.key">
 
+                                            <mat-form-field *ngSwitchCase="'color'">
+                                                <mat-label>{{item.key}}</mat-label>
+                                                <input matInput id="i" type="text" matTooltip="{{getTooltip(item.key)}}" formControlName="{{item.key}}"
+                                                    data-jscolor="{preset: 'dark', hash: false}">
+                                            </mat-form-field>
+                                            
+                                            <div *ngSwitchDefault>
+                                                <div [ngSwitch]="checkType(item.value)">
+
+                                                    <div *ngSwitchCase="'object'">
+
+                                                                   
+
+                                                        <div formGroupName="">{{item.key}} {{item.value | json}}</div>
+                                                            <!-- <div *ngFor="let group of item.value | keyvalue; let i = index;"> -->
+                                                            
+                                                                <!-- <div formGroupName="{{item.key}}"> -->
+                                                                    <!-- <label>Binding</label>
+                                                                    <div *ngFor="let bind of item.value | keyvalue; let i = index;">
+                                                                        <mat-form-field>
+                                                                            <mat-label>{{bind.key}}</mat-label>
+                                                                            <input matInput matTooltip="{{getTooltip(bind.key)}}" id="i" type="text" formControlName="{{bind.key}}">
+                                                                        </mat-form-field>
+                                                                    </div> -->
+                                                                <!-- </div> -->
+                                                            
+                                                            <!-- </div> -->
+                                                        <!-- </div> -->
+                                                        
+                                                        
+                                                    </div>
+
+                                                    <mat-form-field *ngSwitchCase="'number'">
+                                                        <mat-label>{{item.key}}</mat-label>
+                                                        <input matInput id="i" type="number" step=".1" formControlName="{{item.key}}"  matTooltip="{{getTooltip(item.key)}}">
+                                                    </mat-form-field>
+                                                    
                                                     <mat-form-field *ngSwitchDefault>
                                                         <mat-label>{{item.key}}</mat-label>
-                                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                                    </mat-form-field>                 
+                                                        <input matInput id="i" type="text" formControlName="{{item.key}}"  matTooltip="{{getTooltip(item.key)}}">
+                                                    </mat-form-field>
                                                 </div>
+                                                
+
                                             </div>
+
+
                                             
-                                            <mat-form-field *ngSwitchCase="'number'">
-                                                <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="number" step=".1" formControlName="{{item.key}}">  
-                                            </mat-form-field>
-                                        
-                                            <mat-form-field *ngSwitchDefault>
-                                                <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                            </mat-form-field>                
-                                            
+
 
                                         </div>
                                     </div>
@@ -170,7 +184,7 @@
             <mat-card-title>Samples</mat-card-title>
         </mat-card-header>
 
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add element to ui">
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
             <mat-icon>add</mat-icon>
         </button>
         <mat-menu #addSample="matMenu">
@@ -230,7 +244,7 @@
             <mat-card-title>Effects</mat-card-title>
         </mat-card-header>
     
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addEffect" aria-label="add element to ui">
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="addEffect" aria-label="add effect to effect chain">
             <mat-icon>add</mat-icon>
         </button>
         <mat-menu #addEffect="matMenu">

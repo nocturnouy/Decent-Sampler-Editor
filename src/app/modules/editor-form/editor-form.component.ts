@@ -6,6 +6,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import {MatAccordion} from '@angular/material/expansion';
 
 
+
+
 declare function install(): any;
 declare var jscolor: any;
 
@@ -19,6 +21,7 @@ declare var jscolor: any;
 export class EditorFormComponent implements OnInit {
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
+
 
   Object = Object;
   editorForm: FormGroup;
@@ -57,7 +60,7 @@ export class EditorFormComponent implements OnInit {
     return this.editorForm.get('groups') as FormArray;
   }
   get effects(): FormArray {
-    return this.editorForm.get('groups') as FormArray;
+    return this.editorForm.get('effects') as FormArray;
   }
 
 
@@ -67,16 +70,17 @@ export class EditorFormComponent implements OnInit {
     console.log(this.editorForm.controls[parent].value[key].properties)
     return this.editorForm.controls[parent].value[key].properties as FormArray;
   }
+
   sectionElements(key) {
     return this.editorForm.controls[key] as FormArray;
   }
 
 
 
-  async addElement(key,parent) {
+  addElement(key,parent) {
     let element: any = this.fb.group({
       type: key,
-      properties: await this.getProperties(key)
+      properties: this.getProperties(key)
     })
     const array = this.sectionElements(parent);
     array.push(element)
@@ -87,6 +91,7 @@ export class EditorFormComponent implements OnInit {
   getProperties(key) {
     let properties: any;
     if (key === 'knob') {
+      let el = this.fb.group({control1:new FormControl({value: 'value', disabled: false})})
       properties = this.fb.group({
         x: 0,
         y: 0,
@@ -99,13 +104,9 @@ export class EditorFormComponent implements OnInit {
         //type:"float" ,
         minValue:0.0 ,
         maxValue:1.0 ,
-        value:0.1,
-        binding: this.fb.group({
-          control1: '',
-          control2: '',
-          control3: ''
-        }) 
+        value:0.1
       })
+      properties.setControl('binding', el)
     } else if (key === 'slider') {
       properties = this.fb.group({
         sliderX: 0,
@@ -162,6 +163,19 @@ export class EditorFormComponent implements OnInit {
     debugger
   }
   
+  // TODO: check why this is triggering constantly / its a known bug, could not found solution
+  getTooltip(key) {
+    const tooltips = {
+      uiWidth: 'This element is disabled for now',
+      uiHeight: 'This element is disabled for now'
+    }
+   
+    return tooltips[key]? tooltips[key] : null
+
+  }
+
+
+
   colorKeys(x) {
     var keys = x.filter(key => key.type === 'keyboard')
 
@@ -185,7 +199,7 @@ export class EditorFormComponent implements OnInit {
     
     let resultCont = document.getElementById('result');
     let formValue = x;
-
+    console.log(x)
     this.colorKeys(this.editorForm.value.ui)
     
     resultCont.textContent = `

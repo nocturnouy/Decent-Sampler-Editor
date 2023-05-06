@@ -69,3 +69,41 @@
     display: block;
     width: 100%;
 }
+
+
+
+
+
+[aria-label] {
+    position: relative;
+}
+
+[aria-label]:hover:after {
+    transform: scale(1);
+    opacity: 1;
+    transition: 0.1s 0.5s ease;
+}
+
+[aria-label]:after {
+    content: attr(aria-label);
+    position: absolute;
+    //bottom: -40px;
+    //left: 50%;
+    padding: 4px 8px;
+    margin-left: 20px;
+    background: #616161;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: RobotoDraft, Roboto, Arial;
+    font-weight: 500;
+    z-index: 9999;
+    min-width: 200px;
+    transform: scale(0.8);
+    transform-origin: center center;
+    transition: 0.1s  ease;
+    width: auto;
+    opacity: 0;
+}
+
+
