@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -40,7 +41,8 @@ import { PianoRollComponent } from './piano-roll/piano-roll.component';
     MatIconModule,
     MatExpansionModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule
     
   ],
   providers: [{

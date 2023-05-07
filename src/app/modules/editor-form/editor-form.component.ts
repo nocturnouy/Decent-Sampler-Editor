@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import {MatAccordion} from '@angular/material/expansion';
 
@@ -20,18 +20,22 @@ declare var jscolor: any;
 })
 export class EditorFormComponent implements OnInit {
 
-  @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChild(MatAccordion)
+  accordion: MatAccordion = new MatAccordion;
 
 
   Object = Object;
-  editorForm: FormGroup;
-  fileUrl;
+  editorForm: any;
+  fileUrl: SafeResourceUrl | undefined;
 
 
 
   //variables for layout
   uiDisplayx: any;
   uiDisplayy: any;
+
+  // array for selects
+  parameters: any[] = ['FX_REVERB_WET_LEVEL', 'FX_REVERB_ROOM_SIZE', 'FX_REVERB_DAMPING']
 
 
 
@@ -66,21 +70,27 @@ export class EditorFormComponent implements OnInit {
 
 
 
-  getPropertyList(key, parent) {
-    console.log(this.editorForm.controls[parent].value[key].properties)
-    return this.editorForm.controls[parent].value[key].properties as FormArray;
-  }
+  // getPropertyList(key, parent) {
+  //   console.log(this.editorForm.controls[parent].value[key].properties)
+  //   return this.editorForm.controls[parent].value[key].properties as FormArray;
+  // }
 
-  sectionElements(key) {
+  sectionElements(key: string | number) {
     return this.editorForm.controls[key] as FormArray;
   }
 
 
 
-  addElement(key,parent) {
+  addElement(key: any,parent: any) {
     let element: any = this.fb.group({
       type: key,
-      properties: this.getProperties(key)
+      properties: this.getProperties(key),
+      binding: this.fb.group({
+        type: 'effect',
+        level: 'instrument',
+        position: 0,
+        parameter: ''
+      })
     })
     const array = this.sectionElements(parent);
     array.push(element)
@@ -88,10 +98,10 @@ export class EditorFormComponent implements OnInit {
   }
 
 
-  getProperties(key) {
+
+  getProperties(key: string) {
     let properties: any;
     if (key === 'knob') {
-      let el = this.fb.group({control1:new FormControl({value: 'value', disabled: false})})
       properties = this.fb.group({
         x: 0,
         y: 0,
@@ -106,7 +116,6 @@ export class EditorFormComponent implements OnInit {
         maxValue:1.0 ,
         value:0.1
       })
-      properties.setControl('binding', el)
     } else if (key === 'slider') {
       properties = this.fb.group({
         sliderX: 0,
@@ -133,18 +142,19 @@ export class EditorFormComponent implements OnInit {
       })
     }
 
-    return properties
+    return properties;
   }
 
   
 
-  deleteItem(index: number, parent) {
+  deleteItem(index: number, parent: any) {
     this.sectionElements(parent).removeAt(index);
     this.submitForm(this.editorForm.value)
   }
 
   dragEnd($event: CdkDragEnd) {
-    const properties = this.ui.controls[$event.source.element.nativeElement.id].controls.properties
+    const event = $event.source.element.nativeElement.id
+    const properties = this.ui.controls[event].controls.properties
     const position = $event.source.getFreeDragPosition()
     const element = $event.source.element.nativeElement
     
@@ -156,7 +166,7 @@ export class EditorFormComponent implements OnInit {
     this.submitForm(this.editorForm.value)
   }
 
-  checkType(key) {
+  checkType(key: any) {
     return typeof key;
   }
   debugger(){
@@ -164,37 +174,37 @@ export class EditorFormComponent implements OnInit {
   }
   
   // TODO: check why this is triggering constantly / its a known bug, could not found solution
-  getTooltip(key) {
+  getTooltip(key:any) {
     const tooltips = {
       uiWidth: 'This element is disabled for now',
       uiHeight: 'This element is disabled for now'
     }
-   
-    return tooltips[key]? tooltips[key] : null
+    
+    return tooltips[key as keyof typeof tooltips]
 
   }
 
 
 
-  colorKeys(x) {
-    var keys = x.filter(key => key.type === 'keyboard')
+  colorKeys(x: any[]) {
+    var keys = x.filter((key: { type: string; }) => key.type === 'keyboard')
 
     Array.from(document.querySelectorAll('.piano-keys i'))
       .forEach(e => e.removeAttribute('style'));
 
-    keys.map(key => {
+    keys.map((key: { properties: { loNote: any; hiNote: any; color: any; }; }) => {
       let loNote = key.properties.loNote
       let hiNote = key.properties.hiNote
       let color = key.properties.color
 
       for (let step = loNote; step <= hiNote; step++) {
         console.log(color)
-        document.getElementById('cc-' + step).setAttribute('style', 'background-color: #' + color)
+        document.getElementById('cc-' + step)?.setAttribute('style', 'background-color: #' + color)
       }
     })
   }
 
-  async submitForm(x) {
+  async submitForm(x: any) {
     document.getElementById('submit').click()
     
     let resultCont = document.getElementById('result');
@@ -225,11 +235,13 @@ export class EditorFormComponent implements OnInit {
                         maxValue="${element.properties.maxValue}" 
                         value="${element.properties.value}">
                         <binding 
-                          type="effect" 
-                          level="instrument" 
-                          position="0" 
-                          effectIndex="0"
-                          parameter="FX_REVERB_WET_LEVEL" 
+                          type="${element.binding.type}" 
+                          level="${element.binding.level}" 
+                          position="${element.binding.position}"
+                          parameter="${element.binding.parameter}" 
+                          translation="linear" 
+                          translationOutputMin="0" 
+                          translationOutputMax="1"
                           />
                       </labeled-knob>
           `
@@ -274,7 +286,7 @@ export class EditorFormComponent implements OnInit {
          let el: any
          if (element.type === 'reverb') {
            el = `<effect type="reverb" 
-                         roomSiz="${element.properties.roomSiz}" 
+                         roomSize="${element.properties.roomSize}" 
                          damping="${element.properties.damping}" 
                          wetLevel="${element.properties.wetLevel}" 
                           
@@ -300,9 +312,9 @@ export class EditorFormComponent implements OnInit {
   }
 
   fileDownload() {
-    document.getElementById('submit').click()
+    document.getElementById('submit')?.click()
 
-    const data = document.getElementById('result').textContent;
+    const data:any = document.getElementById('result')?.textContent;
     const blob = new Blob([data], { type: 'application/octet-stream' });
 
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
