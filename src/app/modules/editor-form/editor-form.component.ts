@@ -27,6 +27,7 @@ export class EditorFormComponent implements OnInit {
   Object = Object;
   editorForm: any;
   fileUrl: SafeResourceUrl | undefined;
+  objectKeys = Object.keys;
 
 
 
@@ -34,11 +35,69 @@ export class EditorFormComponent implements OnInit {
   uiDisplayx: any;
   uiDisplayy: any;
 
-  // array for selects
-  parameters: any[] = ['FX_REVERB_WET_LEVEL', 'FX_REVERB_ROOM_SIZE', 'FX_REVERB_DAMPING']
+//put this into a separate json and import it
+bindingMenu: any = [
+  {
+  "name": 'Effect',
+  "childs": [{
+      "name": "Reverb",
+      "childs": [
+        {
+          "value": "FX_REVERB_WET_LEVEL",
+          "name": "Wet Level",
+          "tooltip": "tooltip text"
+        }, {
+          "value": "FX_REVERB_ROOM_SIZE",
+          "name": "Room Size",
+          "tooltip": "tooltip text"
+        }, {
+          "value": "FX_REVERB_DAMPING",
+          "name": "Damping",
+          "tooltip": "tooltip text"
+        }
+      ]
+    }]
+  },
+  {
+  "name": 'Amp',
+    "childs": [{
+      'name': 'Group',
+      'tooltip': 'will only affect group amp',
+      'childs':[{
+        "name": "Volume",
+        "value": 'AMP_VOLUME',
+        'tooltip': 'min value 0.0 - max value 1.0',
+        'minValue':0
+      }]
+    },
+    {
+      'name': 'Instrument',
+      'tooltip': 'will only affect instrument amp',
+      'childs': [{
+        "name": "Volume",
+        "value": 'AMP_VOLUME',
+        'tooltip': 'min value 0.0 - max value 1.0',
+        'minValue': 0.1
+      }]
+  }]
+}]
 
 
+setParams(name:string, value:string, uiIndex:number, max:number, min:number,type?:string){
+  const getControls = this.editorForm.get('ui')['controls']
+  const binding = getControls[uiIndex].controls.binding
 
+
+  binding.patchValue({
+    'level': (type === 'Group')? 'group' : 'instrument',
+    'parameter': value,
+    'type': name.toLowerCase(),
+    'minValue': min? min:0,
+    'maxValue': max? max:1
+  })
+
+
+}
 
   constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
     this.editorForm = this.fb.group({
@@ -68,13 +127,6 @@ export class EditorFormComponent implements OnInit {
   }
 
 
-
-
-  // getPropertyList(key, parent) {
-  //   console.log(this.editorForm.controls[parent].value[key].properties)
-  //   return this.editorForm.controls[parent].value[key].properties as FormArray;
-  // }
-
   sectionElements(key: string | number) {
     return this.editorForm.controls[key] as FormArray;
   }
@@ -82,16 +134,26 @@ export class EditorFormComponent implements OnInit {
 
 
   addElement(key: any,parent: any) {
-    let element: any = this.fb.group({
-      type: key,
-      properties: this.getProperties(key),
-      binding: this.fb.group({
-        type: 'effect',
-        level: 'instrument',
-        position: 0,
-        parameter: ''
+    let element: any
+    if(key === 'keyboard'){
+      element = this.fb.group({
+        type: key,
+        properties: this.getProperties(key)
       })
-    })
+    }else{
+      element = this.fb.group({
+        type: key,
+        properties: this.getProperties(key),
+        binding: this.fb.group({
+          type: '',
+          level: '',
+          position: 0,
+          parameter: '',
+          minValue:0,
+          maxValue:1
+        }, { updateOn: 'submit' })
+      })
+    }
     const array = this.sectionElements(parent);
     array.push(element)
     
@@ -123,15 +185,15 @@ export class EditorFormComponent implements OnInit {
       })
     } else if (key === 'keyboard') {
       properties = this.fb.group({
-        loNote: 0,
-        hiNote: 11,
+        lowNote: 0,
+        highNote: 11,
         color: 'FF0000FF'
       })
     } else if (key === 'sample') {
       properties = this.fb.group({
-        loNote: 0,
-        hiNote:127,
-        rootNote:60,
+        loNote: 'C0',
+        hiNote:'C6',
+        rootNote:'C3',
         path: "samples/C4.wav"
       })
     } else if (key === 'reverb') {
@@ -177,7 +239,13 @@ export class EditorFormComponent implements OnInit {
   getTooltip(key:any) {
     const tooltips = {
       uiWidth: 'This element is disabled for now',
-      uiHeight: 'This element is disabled for now'
+      uiHeight: 'This element is disabled for now',
+      loNote: 'can be a cc number or a note name (ex: C3 or 60)',
+      hiNote: 'can be a cc number or a note name (ex: C3 or 60)',
+      rootNote: 'can be a cc number or a note name (ex: C3 or 60)',
+      lowNote: 'starter note to apply color, must be a CC number (0 to 127)',
+      highNote: 'end note to apply color, must be a CC number (0 to 127)'
+
     }
     
     return tooltips[key as keyof typeof tooltips]
@@ -239,9 +307,8 @@ export class EditorFormComponent implements OnInit {
                           level="${element.binding.level}" 
                           position="${element.binding.position}"
                           parameter="${element.binding.parameter}" 
-                          translation="linear" 
-                          translationOutputMin="0" 
-                          translationOutputMax="1"
+                          translation="table"
+                          translationTable="0,${element.binding.minValue};1,${element.binding.maxValue}" 
                           />
                       </labeled-knob>
           `
@@ -254,8 +321,8 @@ export class EditorFormComponent implements OnInit {
             let el:any
             if(element.type === 'keyboard'){
               el = `<color 
-                          loNote="${element.properties.loNote}" 
-                          hiNote="${element.properties.hiNote}" 
+                          loNote="${element.properties.lowNote}" 
+                          hiNote="${element.properties.highNote}" 
                           color="${(element.properties.color.slice(6,8) + element.properties.color.slice(0,6))}" />
                           `
             }
@@ -263,7 +330,7 @@ export class EditorFormComponent implements OnInit {
           } ).join('')}
         </keyboard>
       </ui>
-      <groups attack="0.000" decay="25" sustain="1.0" release="0.430" volume="-3dB">
+      <groups>
         <group>
           ${formValue.groups.map(element => {
             let el: any
