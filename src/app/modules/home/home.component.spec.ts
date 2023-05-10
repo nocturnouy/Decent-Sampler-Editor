@@ -15,10 +15,10 @@ import { MatSelectModule } from '@angular/material/select';
 
 
 
-import { AppRoutingModule } from '../app-routing.module';
-import { AppComponent } from '../app.component';
-import { HomeComponent } from '../home/home.component';
-import { EditorFormComponent } from '../modules/editor-form/editor-form.component';
+import { AppRoutingModule } from '../../app-routing.module';
+import { AppComponent } from '../../app.component';
+import { HomeComponent } from './home.component';
+import { EditorFormComponent } from '../editor-form/editor-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PianoRollComponent } from '../piano-roll/piano-roll.component';
 
