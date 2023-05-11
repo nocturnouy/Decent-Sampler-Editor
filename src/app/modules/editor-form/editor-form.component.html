@@ -1,4 +1,5 @@
 <form [formGroup]="editorForm" (submit)="submitForm(editorForm.value)">
+    <!-- UI Section -->
     <mat-card class="section">
         <mat-card-header>
             <mat-card-title>UI</mat-card-title>
@@ -275,7 +276,7 @@
                 <ng-container *ngFor="let element of  editorForm.get('effects')['controls']; let i = index">
                     <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
                         <mat-expansion-panel-header class="align-icons">
-                            <mat-panel-title><b>{{i}} </b>- Reverb</mat-panel-title>
+                            <mat-panel-title><b>{{i}} </b>- {{editorForm.value.effects[i].type}}</mat-panel-title>
                             <mat-panel-description>
     
                                 <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
@@ -316,7 +317,69 @@
     
     
     </mat-card>
+    <!-- Modulators Section  -->
+    <mat-card class="section">
+        <mat-card-header>
+            <mat-card-title>Modulation</mat-card-title>
+        </mat-card-header>
     
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="addModulation" aria-label="add effect to effect chain">
+            <mat-icon>add</mat-icon>
+        </button>
+        <mat-menu #addModulation="matMenu">
+            <button mat-menu-item (click)="addElement('lfo', 'modulation')">LFO</button>
+            <button mat-menu-item (click)="addElement('envelope', 'modulation')">Envelope</button>
+        </mat-menu>
+    
+        <br>
+    
+        <section formArrayName="modulation" class="group-elements">
+            <mat-accordion class="example-headers-align">
+                <ng-container *ngFor="let element of  editorForm.get('modulation')['controls']; let i = index">
+                    <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
+                        <mat-expansion-panel-header class="align-icons">
+                            <mat-panel-title><b>{{i}} </b>- {{editorForm.value.modulation[i].type}}</mat-panel-title>
+                            <mat-panel-description>
+    
+                                <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
+    
+                                <button mat-icon-button
+                                    (click)="deleteItem(i, 'modulation')"><mat-icon>delete_forever</mat-icon></button>
+                            </mat-panel-description>
+    
+                        </mat-expansion-panel-header> 
+                        <div *ngFor="let item of editorForm.value.modulation[i].properties | keyvalue; let i = index;">
+                            <div formGroupName="properties">
+                                <div [ngSwitch]="checkType(item.value)">
+    
+                                    <mat-form-field *ngSwitchCase="'number'">
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="number" step=".1" max="1" min="0"
+                                            formControlName="{{item.key}}">
+                                    </mat-form-field>
+    
+                                    <mat-form-field *ngSwitchDefault>
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
+                                    </mat-form-field>
+    
+    
+                                </div>
+                            </div>
+                        </div>
+    
+    
+    
+    
+                    </mat-expansion-panel>
+    
+                </ng-container>
+            </mat-accordion>
+    
+        </section>
+    
+    
+    </mat-card>
     <mat-card>
         <mat-card-actions align="end">
                 

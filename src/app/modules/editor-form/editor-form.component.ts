@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFor
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
+import bindingJson from '../../../assets/binding.json';
 import {MatAccordion} from '@angular/material/expansion';
 
 
@@ -36,51 +37,7 @@ export class EditorFormComponent implements OnInit {
   uiDisplayy: any;
 
 //put this into a separate json and import it
-bindingMenu: any = [
-  {
-  "name": 'Effect',
-  "childs": [{
-      "name": "Reverb",
-      "childs": [
-        {
-          "value": "FX_REVERB_WET_LEVEL",
-          "name": "Wet Level",
-          "tooltip": "tooltip text"
-        }, {
-          "value": "FX_REVERB_ROOM_SIZE",
-          "name": "Room Size",
-          "tooltip": "tooltip text"
-        }, {
-          "value": "FX_REVERB_DAMPING",
-          "name": "Damping",
-          "tooltip": "tooltip text"
-        }
-      ]
-    }]
-  },
-  {
-  "name": 'Amp',
-    "childs": [{
-      'name': 'Group',
-      'tooltip': 'will only affect group amp',
-      'childs':[{
-        "name": "Volume",
-        "value": 'AMP_VOLUME',
-        'tooltip': 'min value 0.0 - max value 1.0',
-        'minValue':0
-      }]
-    },
-    {
-      'name': 'Instrument',
-      'tooltip': 'will only affect instrument amp',
-      'childs': [{
-        "name": "Volume",
-        "value": 'AMP_VOLUME',
-        'tooltip': 'min value 0.0 - max value 1.0',
-        'minValue': 0.1
-      }]
-  }]
-}]
+bindingMenu: any = bindingJson
 
 
 setParams(name:string, value:string, uiIndex:number, max:number, min:number,type?:string){
@@ -107,7 +64,8 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
       }, { updateOn: 'blur' }),
       ui: this.fb.array([],{ updateOn: 'submit' }),
       groups: this.fb.array([],{ updateOn: 'submit' }),
-      effects: this.fb.array([])
+      effects: this.fb.array([],{ updateOn: 'submit' }),
+      modulation: this.fb.array([],{ updateOn: 'submit' })
     }
     
     );
@@ -140,7 +98,7 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
         type: key,
         properties: this.getProperties(key)
       })
-    }else{
+    } else{
       element = this.fb.group({
         type: key,
         properties: this.getProperties(key),
@@ -201,6 +159,22 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
         roomSize:0.7,
         damping:0.3,
         wetLevel:1
+      })
+    } else if (key === 'lfo') {
+      properties = this.fb.group({
+        shape: 'sine',
+        frequency: 0.3,
+        scope: 'global',
+        modAmount: 1
+      })
+    } else if (key === 'envelope') {
+      properties = this.fb.group({
+        attack:0,
+        decay:0,
+        sustain:1,
+        release:0,
+        modAmount:1,
+        scope:'global'
       })
     }
 
@@ -330,6 +304,38 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
           } ).join('')}
         </keyboard>
       </ui>
+      <modulators>
+          ${formValue.modulation.map(element =>  {
+            let el:any
+            if(element.type === 'lfo'){
+              el = `<lfo 
+                          shape="${element.properties.shape}"
+                          frequency="${element.properties.frequency}"
+                          scope="${element.properties.scope}"
+                          modAmount="${element.properties.modAmount}">
+                          <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
+                    </lfo>
+                          `
+            }
+            return el? el: ''
+          } ).join('')}
+          ${formValue.modulation.map(element =>  {
+            let el:any
+            if(element.type === 'envelope'){
+              el = `<envelope 
+                          attack="${element.properties.attack}"
+                          decay="${element.properties.decay}"
+                          sustain="${element.properties.sustain}"
+                          release="${element.properties.release}"
+                          modAmount="${element.properties.modAmount}"
+                          scope="${element.properties.scope}">
+                          <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
+                    </envelope>
+                    `
+            }
+            return el? el: ''
+          } ).join('')}
+      </modulators>
       <groups>
         <group>
           ${formValue.groups.map(element => {
