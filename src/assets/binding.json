@@ -431,63 +431,63 @@
 		
 			{
 				"name": "Modulator Amount (Depth)",
-				"label": "MOD_AMOUNT",
+				"value": "MOD_AMOUNT",
 				"minValue": 0.0,
 				"maxValue": 1,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "LFO Modulator Rate (or Frequency)",
-				"label": "FREQUENCY",
+				"value": "FREQUENCY",
 				"minValue": 0.0,
-				"maxValue": 22000.0,
+				"maxValue": 100,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Attack",
-				"label": "ENV_ATTACK",
+				"value": "ENV_ATTACK",
 				"minValue": 0.0,
 				"maxValue": 10,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Attack Curve Shape",
-				"label": "ENV_ATTACK_CURVE",
+				"value": "ENV_ATTACK_CURVE",
 				"minValue": -100,
 				"maxValue": 100,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Decay",
-				"label": "ENV_DECAY",
+				"value": "ENV_DECAY",
 				"minValue": 0.0,
 				"maxValue": 25,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Decay Curve Shape",
-				"label": "ENV_DECAY_CURVE",
+				"value": "ENV_DECAY_CURVE",
 				"minValue": -100,
 				"maxValue": 100,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Sustain",
-				"label": "ENV_SUSTAIN",
+				"value": "ENV_SUSTAIN",
 				"minValue": 0.0,
 				"maxValue": 1,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Release",
-				"label": "ENV_RELEASE",
+				"value": "ENV_RELEASE",
 				"minValue": 0.0,
 				"maxValue": 25,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
 			},
 			{
 				"name": "Envelope Modulator Release Curve Shape",
-				"label": "ENV_RELEASE_CURVE",
+				"value": "ENV_RELEASE_CURVE",
 				"minValue": -100,
 				"maxValue": 100,
 				"tooltip": "modulatorIndex contains the 0-based index of the modulator in question"
