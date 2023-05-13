@@ -4,6 +4,7 @@ import { CdkDragEnd } from "@angular/cdk/drag-drop";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import bindingJson from '../../../assets/binding.json';
+import effectsJson from '../../../assets/effects.json';
 import {MatAccordion} from '@angular/material/expansion';
 
 
@@ -37,7 +38,8 @@ export class EditorFormComponent implements OnInit {
   uiDisplayy: any;
 
 //put this into a separate json and import it
-bindingMenu: any = bindingJson
+  bindingMenu: any = bindingJson
+  effectsMenu: any = effectsJson
 
 
 setParams(name:string, value:string, uiIndex:number, max:number, min:number,type?:string){
@@ -63,7 +65,13 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
         height: [{ value: 375, disabled: true}]
       }, { updateOn: 'blur' }),
       ui: this.fb.array([],{ updateOn: 'submit' }),
-      groups: this.fb.array([],{ updateOn: 'submit' }),
+      groupEnvelope: this.fb.group({
+        attack: [{ value: 0, disabled: false }],
+        sustain: [{ value: 1, disabled: false }],
+        decay: [{ value: 1, disabled: false }],
+        release: [{ value: 0.1, disabled: false }]
+      }, { updateOn: 'blur' }),
+      groups: this.fb.array([], { updateOn: 'submit' }),
       effects: this.fb.array([],{ updateOn: 'submit' }),
       modulation: this.fb.array([],{ updateOn: 'submit' })
     }
@@ -93,12 +101,9 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
 
   addElement(key: any,parent: any) {
     let element: any
-    if(key === 'keyboard'){
-      element = this.fb.group({
-        type: key,
-        properties: this.getProperties(key)
-      })
-    } else{
+
+    
+    if (key === 'knob'){
       element = this.fb.group({
         type: key,
         properties: this.getProperties(key),
@@ -110,6 +115,19 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
           minValue:0,
           maxValue:1
         }, { updateOn: 'submit' })
+      })
+    } else if (parent === 'effects'){
+      const effectProperties = effectsJson.filter(e => e.name === key).map(e => e.properties)[0]
+      element = this.fb.group({
+        type: key,
+        properties: this.fb.group(
+          effectProperties
+        )
+      })
+    } else {
+      element = this.fb.group({
+        type: key,
+        properties: this.getProperties(key)
       })
     }
     const array = this.sectionElements(parent);
@@ -153,12 +171,6 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
         hiNote:'C6',
         rootNote:'C3',
         path: "samples/C4.wav"
-      })
-    } else if (key === 'reverb') {
-      properties = this.fb.group({
-        roomSize:0.7,
-        damping:0.3,
-        wetLevel:1
       })
     } else if (key === 'lfo') {
       properties = this.fb.group({
@@ -210,21 +222,34 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
   }
   
   // TODO: check why this is triggering constantly / its a known bug, could not found solution
-  getTooltip(key:any) {
-    const tooltips = {
-      uiWidth: 'This element is disabled for now',
-      uiHeight: 'This element is disabled for now',
-      loNote: 'can be a cc number or a note name (ex: C3 or 60)',
-      hiNote: 'can be a cc number or a note name (ex: C3 or 60)',
-      rootNote: 'can be a cc number or a note name (ex: C3 or 60)',
-      lowNote: 'starter note to apply color, must be a CC number (0 to 127)',
-      highNote: 'end note to apply color, must be a CC number (0 to 127)'
+  getInfo(key:any, parent?:any) {
+    const info = {
+      controls: {
+        uiWidth: 'This element is disabled for now',
+        uiHeight: 'This element is disabled for now',
+        lowNote: 'starter note to apply color, must be a CC number (0 to 127)',
+        highNote: 'end note to apply color, must be a CC number (0 to 127)',
+        level: 'The amount of gain to be applied expressed as a linear number. In other words, gain of 0.5 reduces sound by 50% (this is equivalent to -6dB). A value of 2.0 doubles the volume of the sound (equivalent to +6dB)'
+      },
+      groups: {
+        loNote: 'can be a cc number or a note name (ex: C3 or 60)',
+        hiNote: 'can be a cc number or a note name (ex: C3 or 60)',
+        rootNote: 'can be a cc number or a note name (ex: C3 or 60)',
+        path: 'the relative path to the sample',
+      },
+      effects: {
+        gain: 'value range is 0 to 8.0, where 1.0 is no change'
 
+      }
+      
+      
+      
     }
     
-    return tooltips[key as keyof typeof tooltips]
+    return info[parent || 'controls'][key as keyof typeof info]
 
   }
+
 
 
 
@@ -281,8 +306,7 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
                           level="${element.binding.level}" 
                           position="${element.binding.position}"
                           parameter="${element.binding.parameter}" 
-                          translation="table"
-                          translationTable="0,${element.binding.minValue};1,${element.binding.maxValue}" 
+                          translation="linear"
                           />
                       </labeled-knob>
           `
@@ -309,10 +333,10 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
             let el:any
             if(element.type === 'lfo'){
               el = `<lfo 
-                          shape="${element.properties.shape}"
-                          frequency="${element.properties.frequency}"
-                          scope="${element.properties.scope}"
-                          modAmount="${element.properties.modAmount}">
+                          ${Object.entries(element.properties).map(([key, val]) => {
+                            return ` ${key}="${val}"`
+                          }).join('') }
+         
                           <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
                     </lfo>
                           `
@@ -323,12 +347,10 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
             let el:any
             if(element.type === 'envelope'){
               el = `<envelope 
-                          attack="${element.properties.attack}"
-                          decay="${element.properties.decay}"
-                          sustain="${element.properties.sustain}"
-                          release="${element.properties.release}"
-                          modAmount="${element.properties.modAmount}"
-                          scope="${element.properties.scope}">
+                          ${Object.entries(element.properties).map(([key, val]) => {
+                            return ` ${key}="${val}"`
+                          }).join('') }
+                          />
                           <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
                     </envelope>
                     `
@@ -337,16 +359,16 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
           } ).join('')}
       </modulators>
       <groups>
-        <group>
+        <group ${Object.entries(formValue.groupEnvelope).map(([key, val]) => { return ` ${key}="${val}"` }).join('') } >
+        
           ${formValue.groups.map(element => {
             let el: any
             if (element.type === 'sample') {
               el = `<sample 
-                          loNote="${element.properties.loNote}" 
-                          hiNote="${element.properties.hiNote}" 
-                          rootNote="${element.properties.rootNote}" 
-                          path="${element.properties.path}" 
-                          
+                          ${Object.entries(element.properties).map(([key, val]) => {
+                            return ` ${key}="${val}"`
+                          }).join('') }
+      
                           />
                           `
             }
@@ -357,24 +379,21 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
       <effects>
        ${formValue.effects.map(element => {
          let el: any
-         if (element.type === 'reverb') {
-           el = `<effect type="reverb" 
-                         roomSize="${element.properties.roomSize}" 
-                         damping="${element.properties.damping}" 
-                         wetLevel="${element.properties.wetLevel}" 
-                          
-                          />
-                          `
-         }
+         el = `<effect type="${element.type}"
+          ${Object.entries(element.properties).map(([key, val]) => {
+            return ` ${key}="${val}"`
+          }).join('') }
+          />
+          `
          return el ? el : ''
        }).join('')}
       </effects>
       <midi>
-        <!-- This causes MIDI CC 1 to control the 4th knob (cutoff) -->
+        <!-- This causes MIDI CC 1 to control the 4th knob (cutoff)
         <cc number="1">
           <binding level="ui" type="control" parameter="VALUE" position="3" 
                   translation="linear" translationOutputMin="0" 
-                  translationOutputMax="1" />
+                  translationOutputMax="1" /> -->
         </cc>
       </midi>
     </DecentSampler>

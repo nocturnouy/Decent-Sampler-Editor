@@ -1,0 +1,80 @@
+[{
+	"name": "filter",
+	"label": "Filter",
+	"properties": {
+		"type":  "lowpass",
+        "resonance":  0.7,
+        "frequency":  22000
+	}
+},
+{
+	"name": "gain",
+	"label": "Gain",
+	"properties": {
+		"level": 0.5
+	}
+},
+{
+	"name": "reverb",
+	"label": "Reverb",
+	"properties": {
+		"roomSize": 0.7,
+		"damping": 0.3,
+		"wetLevel": 1
+	}
+},
+{
+	"name": "delay",
+	"label": "Delay",
+	"properties": {
+		"delayTime": 0.7,
+		"feedback": 0.2,
+		"stereoOffset": 0,
+		"wetLevel": 0.5
+	}
+},
+{
+	"name": "chorus",
+	"label": "Chorus",
+	"properties": {
+		"mix": 0.5,
+		"modDepth": 0.2,
+		"modRate": 0.2
+	}
+},
+{
+	"name": "phaser",
+	"label": "Phaser",
+	"properties": {
+		"mix": 0.5,
+		"modDepth": 0.2,
+		"modRate": 0.2,
+		"centerFrequency":400,
+		"feedback": 0.7
+	}
+},
+{
+	"name": "convolution",
+	"label": "Convolution",
+	"properties": {
+		"mix": 0.5,
+		"irFile": ""
+	}
+},
+{
+	"name": "wave_folder",
+	"label": "Wave Folder",
+	"properties": {
+		"drive": 1,
+		"threshold": 0.25
+	}
+},
+{
+	"name": "wave_shaper",
+	"label": "Wave Shaper",
+	"properties": {
+		"drive": 1,
+		"driveBoost": 1,
+		"outputLevel": 0.1
+	}
+}]

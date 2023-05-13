@@ -10,13 +10,13 @@
                     <mat-card-subtitle>UI Properties</mat-card-subtitle>
                 </mat-card-header>
                 
-                <mat-form-field matTooltip="{{getTooltip('uiWidth')}}"  matTooltipPosition="above">
+                <mat-form-field matTooltip="{{getInfo('uiWidth')}}"  matTooltipPosition="above">
                     <mat-label>Width</mat-label>
                     <!-- <input matInput formControlName="width"  type="number" placeholder="default: 812" value="812"> -->
                     <input matInput type="number" placeholder="default: 812" formControlName="width">
                 </mat-form-field>
                 
-                <mat-form-field matTooltip="{{getTooltip('uiHeight')}}"   matTooltipPosition="above">
+                <mat-form-field matTooltip="{{getInfo('uiHeight')}}"   matTooltipPosition="above">
                     <mat-label>Height</mat-label>
                     <!-- <input matInput formControlName="height"  type="number" placeholder="default: 375" value="375"> -->
                     <input matInput type="number" placeholder="default: 375" formControlName="height">
@@ -60,12 +60,12 @@
                                                     <mat-form-field *ngSwitchCase="'number'">
                                                         <mat-label>{{item.key}}</mat-label>
                                                         <input matInput id="i" type="number" step=".1" formControlName="{{item.key}}"
-                                                            matTooltip="{{getTooltip(item.key)}}">
+                                                            matTooltip="{{getInfo(item.key)}}">
                                                     </mat-form-field>
                                             
                                                     <mat-form-field *ngSwitchDefault>
                                                         <mat-label>{{item.key}}</mat-label>
-                                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getTooltip(item.key)}}">
+                                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
                                                     </mat-form-field>
                                                 </div>
                                             
@@ -74,7 +74,7 @@
 
                                             <mat-form-field *ngSwitchCase="'color'">
                                                 <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="text" matTooltip="{{getTooltip(item.key)}}" formControlName="{{item.key}}"
+                                                <input matInput id="i" type="text" matTooltip="{{getInfo(item.key)}}" formControlName="{{item.key}}"
                                                     data-jscolor="{preset: 'dark', hash: false}">
                                             </mat-form-field>
                                             
@@ -196,22 +196,46 @@
 
 
     </mat-card>
-    <!-- Samples Section  -->
+    <!-- Groups Section  -->
     <mat-card class="section">
         <mat-card-header>
             <mat-card-title>Samples</mat-card-title>
         </mat-card-header>
 
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
-            <mat-icon>add</mat-icon>
-        </button>
-        <mat-menu #addSample="matMenu">
-            <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
-        </mat-menu>
+        <div formGroupName="groupEnvelope">
+            <mat-card-header>
+                <mat-card-subtitle>Group Envelope</mat-card-subtitle>
+            </mat-card-header>
+        
+            <mat-form-field matTooltip="{{getInfo('attack')}}" matTooltipPosition="above">
+                <mat-label>Attack</mat-label>
+                <input matInput type="number" formControlName="attack">
+            </mat-form-field>
+            <mat-form-field matTooltip="{{getInfo('sustain')}}" matTooltipPosition="above">
+                <mat-label>Sustain</mat-label>
+                <input matInput type="number" formControlName="sustain">
+            </mat-form-field>
+            <mat-form-field matTooltip="{{getInfo('decay')}}" matTooltipPosition="above">
+                <mat-label>Decay</mat-label>
+                <input matInput type="number" formControlName="decay">
+            </mat-form-field>
+            <mat-form-field matTooltip="{{getInfo('release')}}" matTooltipPosition="above">
+                <mat-label>Release</mat-label>
+                <input matInput type="number" formControlName="release">
+            </mat-form-field>
+        
 
+        </div>
+        
         <br>
 
         <section formArrayName="groups" class="group-elements">
+            <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
+                <mat-icon>add</mat-icon>
+            </button>
+            <mat-menu #addSample="matMenu">
+                <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
+            </mat-menu>
             <mat-accordion class="example-headers-align">
                 <ng-container *ngFor="let element of  editorForm.get('groups')['controls']; let i = index">
                     <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
@@ -231,12 +255,12 @@
                                         
                                         <mat-form-field *ngSwitchCase="'number'">
                                             <mat-label>{{item.key}}</mat-label>
-                                            <input matInput id="i" type="number" step="1" min="0" formControlName="{{item.key}}"  matTooltip="{{getTooltip(item.key)}}">  
+                                            <input matInput id="i" type="number" step="1" min="0" formControlName="{{item.key}}"  matTooltip="{{getInfo(item.key, 'groups')}}">  
                                         </mat-form-field>
                                     
                                         <mat-form-field *ngSwitchDefault>
                                             <mat-label>{{item.key}}</mat-label>
-                                            <input matInput id="i" type="text" formControlName="{{item.key}}"  matTooltip="{{getTooltip(item.key)}}">
+                                            <input matInput id="i" type="text" formControlName="{{item.key}}"  matTooltip="{{getInfo(item.key, 'groups')}}">
                                         </mat-form-field>                
                                         
 
@@ -261,12 +285,15 @@
         <mat-card-header>
             <mat-card-title>Effects</mat-card-title>
         </mat-card-header>
-    
         <button mat-icon-button color="primary" [matMenuTriggerFor]="addEffect" aria-label="add effect to effect chain">
             <mat-icon>add</mat-icon>
         </button>
         <mat-menu #addEffect="matMenu">
-            <button mat-menu-item (click)="addElement('reverb', 'effects')">Reverb</button>
+            <ng-container *ngFor="let effect of effectsMenu; let i=index">
+                <button mat-menu-item (click)="addElement(effect.name, 'effects')">
+                    {{effect.label}}
+                </button>
+            </ng-container>
         </mat-menu>
     
         <br>
@@ -278,7 +305,7 @@
                         <mat-expansion-panel-header class="align-icons">
                             <mat-panel-title><b>{{i}} </b>- {{editorForm.value.effects[i].type}}</mat-panel-title>
                             <mat-panel-description>
-    
+                                {{getInfo(editorForm.value.effects[i].type, 'effects')}}
                                 <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
     
                                 <button mat-icon-button
@@ -292,12 +319,12 @@
     
                                     <mat-form-field *ngSwitchCase="'number'">
                                         <mat-label>{{item.key}}</mat-label>
-                                        <input matInput id="i" type="number" step=".1" max="1" min="0" formControlName="{{item.key}}">
+                                        <input matInput id="i" type="number" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
                                     </mat-form-field>
     
                                     <mat-form-field *ngSwitchDefault>
                                         <mat-label>{{item.key}}</mat-label>
-                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
+                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
                                     </mat-form-field>
     
     
