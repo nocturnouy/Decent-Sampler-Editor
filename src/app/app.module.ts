@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { HighlightPlusModule } from 'ngx-highlightjs/plus';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,6 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -20,13 +22,17 @@ import { HomeComponent } from './modules/home/home.component';
 import { EditorFormComponent } from './modules/editor-form/editor-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PianoRollComponent } from './modules/piano-roll/piano-roll.component';
+import { ChangelogComponent } from './modules/changelog/changelog.component';
+import { TutorialComponent } from './modules/tutorial/tutorial.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     EditorFormComponent,
-    PianoRollComponent
+    PianoRollComponent,
+    ChangelogComponent,
+    TutorialComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +41,7 @@ import { PianoRollComponent } from './modules/piano-roll/piano-roll.component';
     ReactiveFormsModule,
     DragDropModule,
     HighlightModule,
+    HighlightPlusModule,
     MatCardModule,
     BrowserAnimationsModule,
     MatButtonModule,
@@ -43,7 +50,8 @@ import { PianoRollComponent } from './modules/piano-roll/piano-roll.component';
     MatExpansionModule,
     MatInputModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDialogModule
     
   ],
   providers: [{

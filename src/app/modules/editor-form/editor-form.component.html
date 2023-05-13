@@ -1,3 +1,11 @@
+
+<mat-card-actions align="end">
+    <button mat-button (click)="openDialog('changelog')">v0.0.0 Changelog</button>
+
+    <button mat-button (click)="openDialog('tutorial')">How To Use</button>
+</mat-card-actions>
+
+
 <form [formGroup]="editorForm" (submit)="submitForm(editorForm.value)">
     <!-- UI Section -->
     <mat-card class="section">
@@ -9,18 +17,17 @@
                 <mat-card-header>
                     <mat-card-subtitle>UI Properties</mat-card-subtitle>
                 </mat-card-header>
-                
-                <mat-form-field matTooltip="{{getInfo('uiWidth')}}"  matTooltipPosition="above">
-                    <mat-label>Width</mat-label>
-                    <!-- <input matInput formControlName="width"  type="number" placeholder="default: 812" value="812"> -->
-                    <input matInput type="number" placeholder="default: 812" formControlName="width">
-                </mat-form-field>
-                
-                <mat-form-field matTooltip="{{getInfo('uiHeight')}}"   matTooltipPosition="above">
-                    <mat-label>Height</mat-label>
-                    <!-- <input matInput formControlName="height"  type="number" placeholder="default: 375" value="375"> -->
-                    <input matInput type="number" placeholder="default: 375" formControlName="height">
-                </mat-form-field>
+                <div class="horizontal-fields">
+                    <mat-form-field matTooltip="{{getInfo('uiWidth')}}"  matTooltipPosition="above">
+                        <mat-label>Width</mat-label>
+                        <input matInput type="number" formControlName="width">
+                    </mat-form-field>
+                    
+                    <mat-form-field matTooltip="{{getInfo('uiHeight')}}"   matTooltipPosition="above">
+                        <mat-label>Height</mat-label>
+                        <input matInput type="number"  formControlName="height">
+                    </mat-form-field>
+                </div>
             </div>
 
             <ng-container formArrayName="ui" class="ui-elements">
@@ -34,14 +41,14 @@
                         <button mat-menu-item (click)="addElement('knob', 'ui')">Knob</button>
                         <button mat-menu-item (click)="addElement('keyboard', 'ui')">Key Color</button>
                     </mat-menu>                
-                <mat-accordion class="example-headers-align">
+                <mat-accordion class="ui-elements-accordion">
                     <ng-container *ngFor="let element of  editorForm.get('ui')['controls']; let uiIndex = index">
                         <script>
                             jscolor.install()
                         </script>
                         <mat-expansion-panel [formGroupName]="uiIndex" (opened)="displayPicker()" (closed)="submitForm(editorForm.value)" hideToggle>
                             <mat-expansion-panel-header class="align-icons">
-                                <mat-panel-title><b>{{uiIndex}} </b>- Type: {{editorForm.value.ui[uiIndex].properties.label || editorForm.value.ui[uiIndex].type}}</mat-panel-title>
+                                <mat-panel-title><b>{{uiIndex}} </b>- Label: {{editorForm.value.ui[uiIndex].properties.label || editorForm.value.ui[uiIndex].type}}</mat-panel-title>
                                 <mat-panel-description>
 
                                     <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
@@ -142,53 +149,55 @@
 
 
 
-        <div class="ui-display" [style.width]="uiDisplayx+'px'" [style.height]="uiDisplayy - 35 +'px'" >
-            <div *ngFor="let c of editorForm.value.ui; let i=index;">
-            <div [ngSwitch]="c.type">
-                    <div *ngSwitchCase="'knob'">
-                        <div class="ui-button" 
-                            id="{{i}}" 
-                            cdkDrag 
-                            cdkDragBoundary=".ui-display"
-                            (cdkDragEnded)="dragEnd($event)"
-                            [cdkDragFreeDragPosition]="{x: c.properties.x, y: c.properties.y }"
+        <div class="ui-display" >
+            <div [style.width]="uiDisplayx+'px'" [style.height]="uiDisplayy - 35 +'px'" >
+                <div *ngFor="let c of editorForm.value.ui; let i=index;">
+                <div [ngSwitch]="c.type">
+                        <div *ngSwitchCase="'knob'">
+                            <div class="ui-button" 
+                                id="{{i}}" 
+                                cdkDrag 
+                                cdkDragBoundary=".ui-display"
+                                (cdkDragEnded)="dragEnd($event)"
+                                [cdkDragFreeDragPosition]="{x: c.properties.x, y: c.properties.y }"
 
-                            >
-                            <div class="example-handle">
-                                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-                                <path d="M0 0h24v24H0z" fill="none"></path>
-                                </svg>
-                            </div>
-                            <div class="knob">
-                                
-                                <label>{{c.properties.label}}</label>
-                                <svg width="101" height="100" viewBox="0 0 101 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clip-path="url(#clip0_6_60)">
-                                <rect width="90" height="90" rx="50" fill="#DFDFDF"/>
-                                <path d="M51.3598 79.0194L80.2224 101.155L22.4714 101.121L51.3598 79.0194Z" fill="black"/>
-                                <g style="mix-blend-mode:darken">
-                                <path d="M95.5 50C95.5 74.5252 75.4045 94.5 50.5 94.5C25.5955 94.5 5.5 74.5252 5.5 50C5.5 25.4748 25.5955 5.5 50.5 5.5C75.4045 5.5 95.5 25.4748 95.5 50Z" stroke="#D1CECE" stroke-width="11"/>
-                                </g>
-                                <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" fill="white"/>
-                                <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" stroke="white"/>
-                                </g>
-                                <defs>
-                                <clipPath id="clip0_6_60">
-                                <rect width="101" height="100" rx="50" fill="white"/>
-                                </clipPath>
-                                </defs>
-                                </svg>
+                                >
+                                <div class="example-handle">
+                                    <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                    <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                </div>
+                                <div class="knob">
+                                    
+                                    <label>{{c.properties.label}}</label>
+                                    <svg width="101" height="100" viewBox="0 0 101 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_6_60)">
+                                    <rect width="90" height="90" rx="50" fill="#DFDFDF"/>
+                                    <path d="M51.3598 79.0194L80.2224 101.155L22.4714 101.121L51.3598 79.0194Z" fill="black"/>
+                                    <g style="mix-blend-mode:darken">
+                                    <path d="M95.5 50C95.5 74.5252 75.4045 94.5 50.5 94.5C25.5955 94.5 5.5 74.5252 5.5 50C5.5 25.4748 25.5955 5.5 50.5 5.5C75.4045 5.5 95.5 25.4748 95.5 50Z" stroke="#D1CECE" stroke-width="11"/>
+                                    </g>
+                                    <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" fill="white"/>
+                                    <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" stroke="white"/>
+                                    </g>
+                                    <defs>
+                                    <clipPath id="clip0_6_60">
+                                    <rect width="101" height="100" rx="50" fill="white"/>
+                                    </clipPath>
+                                    </defs>
+                                    </svg>
 
-                            </div></div>
-                    </div>
+                                </div></div>
+                        </div>
 
-                    <div *ngSwitchDefault>
-                        <!-- display nothing if its not in the list -->
-                    </div>
+                        <div *ngSwitchDefault>
+                            <!-- display nothing if its not in the list -->
+                        </div>
+                </div>
+                </div>
+                <app-piano-roll></app-piano-roll>
             </div>
-            </div>
-         <app-piano-roll></app-piano-roll>
 
         </div>
 
@@ -206,23 +215,24 @@
             <mat-card-header>
                 <mat-card-subtitle>Group Envelope</mat-card-subtitle>
             </mat-card-header>
-        
-            <mat-form-field matTooltip="{{getInfo('attack')}}" matTooltipPosition="above">
-                <mat-label>Attack</mat-label>
-                <input matInput type="number" formControlName="attack">
-            </mat-form-field>
-            <mat-form-field matTooltip="{{getInfo('sustain')}}" matTooltipPosition="above">
-                <mat-label>Sustain</mat-label>
-                <input matInput type="number" formControlName="sustain">
-            </mat-form-field>
-            <mat-form-field matTooltip="{{getInfo('decay')}}" matTooltipPosition="above">
-                <mat-label>Decay</mat-label>
-                <input matInput type="number" formControlName="decay">
-            </mat-form-field>
-            <mat-form-field matTooltip="{{getInfo('release')}}" matTooltipPosition="above">
-                <mat-label>Release</mat-label>
-                <input matInput type="number" formControlName="release">
-            </mat-form-field>
+            <div class="horizontal-fields">
+                <mat-form-field matTooltip="{{getInfo('attack')}}" matTooltipPosition="above">
+                    <mat-label>Attack</mat-label>
+                    <input matInput type="number" formControlName="attack">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('sustain')}}" matTooltipPosition="above">
+                    <mat-label>Sustain</mat-label>
+                    <input matInput type="number" formControlName="sustain">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('decay')}}" matTooltipPosition="above">
+                    <mat-label>Decay</mat-label>
+                    <input matInput type="number" formControlName="decay">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('release')}}" matTooltipPosition="above">
+                    <mat-label>Release</mat-label>
+                    <input matInput type="number" formControlName="release">
+                </mat-form-field>
+            </div>
         
 
         </div>
@@ -407,6 +417,9 @@
     
     
     </mat-card>
+
+
+    <!-- End Section -->
     <mat-card>
         <mat-card-actions align="end">
                 
@@ -416,12 +429,17 @@
         </mat-card-actions>
     </mat-card>
 
-    
+
+<pre>
+    <mat-card *ngIf="code" class="section">
+        <code [highlight]="code" id="result"></code>
+    </mat-card>
+</pre>
 
 </form>
 
-<pre>
-<mat-card>
-  <code [highlight]="" id="result"></code>
-</mat-card>
-</pre>
+
+
+
+
+

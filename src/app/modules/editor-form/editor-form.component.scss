@@ -4,15 +4,25 @@
     flex-wrap: wrap;
     justify-content: space-between;
     margin-bottom: 20px;
+    padding: 0 10px 10px;
     .mat-mdc-card-header {
-        flex: 0 0 100%;
+        flex-basis:100%;
+    }
+    .ui-properties{
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+    }
+    .ui-display {
+        flex-grow: 2;
+        flex-shrink: 1;
+        flex-basis: auto;
     }
 }
 
 
-.ui-display {
+.ui-display > div {
     border: 1px solid;
-    margin: 20px;
     position: relative;
     background-image: url(../../../assets/bg.png);
     background-size: 100%;
@@ -57,12 +67,17 @@
     }
 }
 
-
-
+.ui-elements-accordion {
+    padding: 0 20px 10px 0;
+    display: block;
+}
+.align-icons .mat-expansion-panel-header-title {
+    flex-grow: 2;
+}
 .align-icons .mat-expansion-panel-header-description {
     justify-content: flex-end;
     margin-right: 0;
-    //flex-grow: 0;
+    flex-grow: 3;
 }
 
 .group-elements {
@@ -71,7 +86,16 @@
 }
 
 
+.horizontal-fields {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+}
 
+.horizontal-fields mat-form-field {
+    flex: 0 1 auto;
+    margin: 0px 10px;
+}
 
 
 [aria-label] {

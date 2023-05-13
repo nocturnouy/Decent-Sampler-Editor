@@ -2,16 +2,21 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatAccordion } from '@angular/material/expansion';
+import { MatDialog } from '@angular/material/dialog';
+
+import { ChangelogComponent } from '../changelog/changelog.component';
+
+
 
 import bindingJson from '../../../assets/binding.json';
 import effectsJson from '../../../assets/effects.json';
-import {MatAccordion} from '@angular/material/expansion';
-
-
+import { TutorialComponent } from '../tutorial/tutorial.component';
 
 
 declare function install(): any;
 declare var jscolor: any;
+
 
 
 
@@ -20,6 +25,7 @@ declare var jscolor: any;
   templateUrl: './editor-form.component.html',
   styleUrls: ['./editor-form.component.scss']
 })
+
 export class EditorFormComponent implements OnInit {
 
   @ViewChild(MatAccordion)
@@ -30,7 +36,8 @@ export class EditorFormComponent implements OnInit {
   editorForm: any;
   fileUrl: SafeResourceUrl | undefined;
   objectKeys = Object.keys;
-
+  
+  code:any
 
 
   //variables for layout
@@ -41,24 +48,7 @@ export class EditorFormComponent implements OnInit {
   bindingMenu: any = bindingJson
   effectsMenu: any = effectsJson
 
-
-setParams(name:string, value:string, uiIndex:number, max:number, min:number,type?:string){
-  const getControls = this.editorForm.get('ui')['controls']
-  const binding = getControls[uiIndex].controls.binding
-
-
-  binding.patchValue({
-    'level': (type === 'Group')? 'group' : 'instrument',
-    'parameter': value,
-    'type': name.toLowerCase(),
-    'minValue': min? min:0,
-    'maxValue': max? max:1
-  })
-
-
-}
-
-  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog) {
     this.editorForm = this.fb.group({
       uiProperties: this.fb.group({
         width: [{ value: 812, disabled: true}],
@@ -98,6 +88,21 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
   }
 
 
+  setParams(name: string, value: string, uiIndex: number, max: number, min: number, type?: string) {
+    const getControls = this.editorForm.get('ui')['controls']
+    const binding = getControls[uiIndex].controls.binding
+
+
+    binding.patchValue({
+      'level': (type === 'Group') ? 'group' : 'instrument',
+      'parameter': value,
+      'type': name.toLowerCase(),
+      'minValue': min ? min : 0,
+      'maxValue': max ? max : 1
+    })
+
+
+  }
 
   addElement(key: any,parent: any) {
     let element: any
@@ -274,13 +279,11 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
   async submitForm(x: any) {
     document.getElementById('submit').click()
     
-    let resultCont = document.getElementById('result');
     let formValue = x;
     console.log(x)
     this.colorKeys(this.editorForm.value.ui)
     
-    resultCont.textContent = `
-    <?xml version="1.0" encoding="UTF-8"?>
+    this.code = ` <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.0.0">
       <!-- TODO: once width and height for the ui gets enabled I should replace this with the get value of those controls -->
       <ui width="${this.uiDisplayx}" height="${this.uiDisplayy}" layoutMode="relative" bgMode="top_left">
@@ -389,12 +392,7 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
        }).join('')}
       </effects>
       <midi>
-        <!-- This causes MIDI CC 1 to control the 4th knob (cutoff)
-        <cc number="1">
-          <binding level="ui" type="control" parameter="VALUE" position="3" 
-                  translation="linear" translationOutputMin="0" 
-                  translationOutputMax="1" /> -->
-        </cc>
+
       </midi>
     </DecentSampler>
     `
@@ -426,5 +424,11 @@ setParams(name:string, value:string, uiIndex:number, max:number, min:number,type
     jscolor.install()
   }
 
+  openDialog(module) {
+    (module == 'changelog') ? this.dialog.open(ChangelogComponent):
+    (module == 'tutorial') ? this.dialog.open(TutorialComponent): ''
+
+  }
 
 }
+
