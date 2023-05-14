@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
@@ -15,14 +15,17 @@ import { MatSelectModule } from '@angular/material/select';
 
 
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './modules/home/home.component';
-import { EditorFormComponent } from './modules/editor-form/editor-form.component';
+import { AppRoutingModule } from '../../app-routing.module';
+import { AppComponent } from '../../app.component';
+import { HomeComponent } from './home.component';
+import { EditorFormComponent } from '../editor-form/editor-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PianoRollComponent } from './modules/piano-roll/piano-roll.component';
+import { PianoRollComponent } from '../piano-roll/piano-roll.component';
 
-describe('AppComponent', () => {
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
@@ -49,20 +52,15 @@ describe('AppComponent', () => {
         MatSelectModule
 
       ]
-    }).compileComponents();
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
-
-  it(`should have as title 'Decent-Sampler-Editor'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('Decent-Sampler-Editor');
-  });
-
-
 });

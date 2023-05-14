@@ -1,20 +1,34 @@
-.ui-section {
+.section {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 10px 10px;
     .mat-mdc-card-header {
-        flex: 0 0 100%;
+        flex-basis:100%;
+    }
+    .ui-properties{
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+    }
+    .ui-display {
+        flex-grow: 2;
+        flex-shrink: 1;
+        flex-basis: auto;
+    }
+    mat-card-header {
+        margin-bottom: 10px;
+         button {
+             transform: translate(10px, -5px);
+         }
     }
 }
 
-.ui-properties {
 
-}
-
-.ui-display {
+.ui-display > div {
     border: 1px solid;
-    margin: 20px;
     position: relative;
     background-image: url(../../../assets/bg.png);
     background-size: 100%;
@@ -37,9 +51,6 @@
     transition: all 50ms ease;
     width: 90px;
     height: 90px;
-    &:active {
-       // background-color: blue;
-    }
     &:hover .example-handle {
         opacity: 1;
         transform: scale(0.4);
@@ -62,15 +73,67 @@
     }
 }
 
-
-
+.ui-elements-accordion {
+    padding: 0 20px 10px 0;
+    display: block;
+}
+.align-icons .mat-expansion-panel-header-title {
+    flex-grow: 2;
+}
 .align-icons .mat-expansion-panel-header-description {
     justify-content: flex-end;
     margin-right: 0;
-    flex-grow: 0;
+    flex-grow: 3;
 }
 
 .group-elements {
     display: block;
     width: 100%;
 }
+
+
+.horizontal-fields {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.horizontal-fields mat-form-field {
+    flex: 0 1 auto;
+    margin: 0px 10px;
+}
+
+
+[aria-label] {
+    position: relative;
+}
+
+[aria-label]:hover:after {
+    transform: scale(1);
+    opacity: 1;
+    transition: 0.1s 0.5s ease;
+}
+
+[aria-label]:after {
+    content: attr(aria-label);
+    position: absolute;
+    //bottom: -40px;
+    //left: 50%;
+    padding: 4px 8px;
+    margin-left: 20px;
+    background: #616161;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: RobotoDraft, Roboto, Arial;
+    font-weight: 500;
+    z-index: 9999;
+    min-width: 200px;
+    transform: scale(0.8);
+    transform-origin: center center;
+    transition: 0.1s  ease;
+    width: auto;
+    opacity: 0;
+}
+
+

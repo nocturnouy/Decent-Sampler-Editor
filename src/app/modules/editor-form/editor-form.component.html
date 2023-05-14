@@ -1,9 +1,14 @@
 
+<mat-card-actions align="end">
+    <button mat-button (click)="openDialog('changelog')">v0.1.0</button>
+
+    <button mat-button (click)="openDialog('tutorial')">How To Use</button>
+</mat-card-actions>
 
 
-
-<form [formGroup]="myForm" (submit)="submitForm(myForm.value)">
-    <mat-card class="ui-section">
+<form [formGroup]="editorForm" (submit)="submitForm(editorForm.value)">
+    <!-- UI Section -->
+    <mat-card class="section">
         <mat-card-header>
             <mat-card-title>UI</mat-card-title>
         </mat-card-header>
@@ -12,77 +17,120 @@
                 <mat-card-header>
                     <mat-card-subtitle>UI Properties</mat-card-subtitle>
                 </mat-card-header>
-                
-                <mat-form-field>
-                    <mat-label>Width</mat-label>
-                    <!-- <input matInput formControlName="width"  type="number" placeholder="default: 812" value="812"> -->
-                    <input matInput disabled type="number" placeholder="default: 812" value="812">
-                </mat-form-field>
-                
-                <mat-form-field>
-                    <mat-label>Height</mat-label>
-                    <!-- <input matInput formControlName="height"  type="number" placeholder="default: 375" value="375"> -->
-                    <input matInput disabled type="number" placeholder="default: 375" value="375">
-                </mat-form-field>
+                <div class="horizontal-fields">
+                    <mat-form-field matTooltip="{{getInfo('uiWidth')}}"  matTooltipPosition="above">
+                        <mat-label>Width</mat-label>
+                        <input matInput type="number" formControlName="width">
+                    </mat-form-field>
+                    
+                    <mat-form-field matTooltip="{{getInfo('uiHeight')}}"   matTooltipPosition="above">
+                        <mat-label>Height</mat-label>
+                        <input matInput type="number"  formControlName="height">
+                    </mat-form-field>
+                </div>
             </div>
 
             <ng-container formArrayName="ui" class="ui-elements">
                 <mat-card-header>
                     <mat-card-subtitle>UI Elements</mat-card-subtitle>
-                </mat-card-header>
-                    <button mat-icon-button color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
+                    <button mat-mini-fab color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
                         <mat-icon>add</mat-icon>
                     </button>
+                </mat-card-header>
+                    
                     <mat-menu #addUI="matMenu">
                         <button mat-menu-item (click)="addElement('knob', 'ui')">Knob</button>
                         <button mat-menu-item (click)="addElement('keyboard', 'ui')">Key Color</button>
                     </mat-menu>                
-                <mat-accordion class="example-headers-align">
-                    <ng-container *ngFor="let element of  myForm.get('ui')['controls']; let i = index">
+                <mat-accordion class="ui-elements-accordion">
+                    <ng-container *ngFor="let element of  editorForm.get('ui')['controls']; let uiIndex = index">
                         <script>
                             jscolor.install()
                         </script>
-                        <mat-expansion-panel [formGroupName]="i" (opened)="displayPicker()" (closed)="submitForm(myForm.value)" hideToggle>
+                        <mat-expansion-panel [formGroupName]="uiIndex" (opened)="displayPicker()" (closed)="submitForm(editorForm.value)" hideToggle>
                             <mat-expansion-panel-header class="align-icons">
-                                <mat-panel-title><b>{{i + 1}} </b>- Type: {{myForm.value.ui[i].properties.label || myForm.value.ui[i].type}}</mat-panel-title>
+                                <mat-panel-title><b>{{uiIndex}} </b>- Label: {{editorForm.value.ui[uiIndex].properties.label || editorForm.value.ui[uiIndex].type}}</mat-panel-title>
                                 <mat-panel-description>
 
-                                    <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
+                                    <button mat-icon-button (click)="submitForm(editorForm.value)" ><mat-icon>save</mat-icon></button>
 
-                                    <button mat-icon-button (click)="deleteItem(i, 'ui')"><mat-icon>delete_forever</mat-icon></button>
+                                    <button mat-icon-button (click)="deleteItem(uiIndex, 'ui')"><mat-icon>delete_forever</mat-icon></button>
                                 </mat-panel-description>
 
                             </mat-expansion-panel-header>
-                                <div *ngFor="let item of myForm.value.ui[i].properties | keyvalue; let i = index;">
-                                    <div formGroupName="properties">
-                                        <div [ngSwitch]="checkType(item.value)">
-                                            <div *ngSwitchCase="'string'">
-                                                <div [ngSwitch]="item.key">
-                                                    <mat-form-field *ngSwitchCase="'color'">
-                                                        <mat-label>{{item.key}}</mat-label>
-                                                        <input matInput id="i" type="text" formControlName="{{item.key}}" data-jscolor="{preset: 'dark', hash: false}">
-                                                    </mat-form-field>
+                                <div formGroupName="properties">
 
+                                    <div *ngFor="let item of editorForm.value.ui[uiIndex].properties | keyvalue; let i = index;">
+                                        <div [ngSwitch]="item.key">
+                                            
+                                            <div *ngSwitchDefault>
+                                                <div [ngSwitch]="checkType(item.value)">
+                                                    <mat-form-field *ngSwitchCase="'number'">
+                                                        <mat-label>{{item.key}}</mat-label>
+                                                        <input matInput id="i" type="number" step=".1" formControlName="{{item.key}}"
+                                                            matTooltip="{{getInfo(item.key)}}">
+                                                    </mat-form-field>
+                                            
                                                     <mat-form-field *ngSwitchDefault>
                                                         <mat-label>{{item.key}}</mat-label>
-                                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                                    </mat-form-field>                 
+                                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
+                                                    </mat-form-field>
                                                 </div>
-                                            </div>
                                             
-                                            <mat-form-field *ngSwitchCase="'number'">
+                                            
+                                            </div>
+
+                                            <mat-form-field *ngSwitchCase="'color'">
                                                 <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="number" step=".1" formControlName="{{item.key}}">  
+                                                <input matInput id="i" type="text" matTooltip="{{getInfo(item.key)}}" formControlName="{{item.key}}"
+                                                    data-jscolor="{preset: 'dark', hash: false}">
                                             </mat-form-field>
-                                        
-                                            <mat-form-field *ngSwitchDefault>
-                                                <mat-label>{{item.key}}</mat-label>
-                                                <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                            </mat-form-field>                
                                             
 
                                         </div>
                                     </div>
+
+
+                                </div>
+
+                                <div formGroupName="binding">
+                              
+                                    <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
+                                    <mat-menu #bindingsSelect="matMenu">
+                                        <ng-container *ngFor="let parent of bindingEffects; let i=index">
+                                            <button mat-menu-item [matMenuTriggerFor]="submenu">
+                                                {{parent.name}}
+                                            </button>
+                                            <mat-menu #submenu="matMenu">
+                                                <ng-container *ngFor="let type of parent.childs; let i = index">
+                                                    <button mat-menu-item [matMenuTriggerFor]="param" *ngIf="type.childs" matTooltip="{{type.tooltip}}"  matTooltipPosition="above">
+                                                        {{type.name}}
+                                                    </button>
+                                                    <button mat-menu-item *ngIf="!type.childs" matTooltip="{{type.tooltip}}" (click)="setParams('ui',parent.name, type.value, uiIndex, type.maxValue, type.minValue)">
+                                                        {{type.name}}
+                                                    </button>
+                                                    <mat-menu #param="matMenu">
+                                                        <ng-container *ngFor="let param of type.childs; let i = index">
+                                                            <button mat-menu-item matTooltip="{{param.tooltip}}"  matTooltipPosition="above"
+                                                                (click)="setParams('ui',parent.name, param.value, uiIndex, param.maxValue, param.minValue, type.name)">
+                                                                {{param.name}}
+                                                            </button>
+                                                        </ng-container>
+                                                    </mat-menu>
+                                                </ng-container>
+                                            </mat-menu>
+                                        </ng-container>
+
+                                    </mat-menu>
+
+                                    <br>
+                                    <label>Parameter Selected - {{editorForm.value.ui[uiIndex].binding.parameter}}</label>
+                                    <br>
+                                    <mat-form-field>
+                                        <mat-label>Position</mat-label>
+                                        <input matInput id="i" type="number" step="1" formControlName="position" matTooltip="index of the affected element">
+                                    </mat-form-field>
+
                                 </div>
                             
 
@@ -102,53 +150,55 @@
 
 
 
-        <div class="ui-display" [style.width]="myForm.value.uiProperties.width+'px'" [style.height]="myForm.value.uiProperties.height - 35 +'px'" >
-            <div *ngFor="let c of myForm.value.ui; let i=index;">
-            <div [ngSwitch]="c.type">
-                    <div *ngSwitchCase="'knob'">
-                        <div class="ui-button" 
-                            id="{{i}}" 
-                            cdkDrag 
-                            cdkDragBoundary=".ui-display"
-                            (cdkDragEnded)="dragEnd($event)"
-                            [cdkDragFreeDragPosition]="{x: c.properties.x, y: c.properties.y }"
+        <div class="ui-display" >
+            <div [style.width]="uiDisplayx+'px'" [style.height]="uiDisplayy - 35 +'px'" >
+                <div *ngFor="let c of editorForm.value.ui; let i=index;">
+                <div [ngSwitch]="c.type">
+                        <div *ngSwitchCase="'knob'">
+                            <div class="ui-button" 
+                                id="{{i}}" 
+                                cdkDrag 
+                                cdkDragBoundary=".ui-display"
+                                (cdkDragEnded)="dragEnd($event)"
+                                [cdkDragFreeDragPosition]="{x: c.properties.x, y: c.properties.y }"
 
-                            >
-                            <div class="example-handle">
-                                <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
-                                <path d="M0 0h24v24H0z" fill="none"></path>
-                                </svg>
-                            </div>
-                            <div class="knob">
-                                
-                                <label>{{c.properties.label}}</label>
-                                <svg width="101" height="100" viewBox="0 0 101 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g clip-path="url(#clip0_6_60)">
-                                <rect width="90" height="90" rx="50" fill="#DFDFDF"/>
-                                <path d="M51.3598 79.0194L80.2224 101.155L22.4714 101.121L51.3598 79.0194Z" fill="black"/>
-                                <g style="mix-blend-mode:darken">
-                                <path d="M95.5 50C95.5 74.5252 75.4045 94.5 50.5 94.5C25.5955 94.5 5.5 74.5252 5.5 50C5.5 25.4748 25.5955 5.5 50.5 5.5C75.4045 5.5 95.5 25.4748 95.5 50Z" stroke="#D1CECE" stroke-width="11"/>
-                                </g>
-                                <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" fill="white"/>
-                                <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" stroke="white"/>
-                                </g>
-                                <defs>
-                                <clipPath id="clip0_6_60">
-                                <rect width="101" height="100" rx="50" fill="white"/>
-                                </clipPath>
-                                </defs>
-                                </svg>
+                                >
+                                <div class="example-handle">
+                                    <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                                    <path d="M0 0h24v24H0z" fill="none"></path>
+                                    </svg>
+                                </div>
+                                <div class="knob">
+                                    
+                                    <label>{{c.properties.label}}</label>
+                                    <svg width="101" height="100" viewBox="0 0 101 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_6_60)">
+                                    <rect width="90" height="90" rx="50" fill="#DFDFDF"/>
+                                    <path d="M51.3598 79.0194L80.2224 101.155L22.4714 101.121L51.3598 79.0194Z" fill="black"/>
+                                    <g style="mix-blend-mode:darken">
+                                    <path d="M95.5 50C95.5 74.5252 75.4045 94.5 50.5 94.5C25.5955 94.5 5.5 74.5252 5.5 50C5.5 25.4748 25.5955 5.5 50.5 5.5C75.4045 5.5 95.5 25.4748 95.5 50Z" stroke="#D1CECE" stroke-width="11"/>
+                                    </g>
+                                    <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" fill="white"/>
+                                    <path d="M92 50C92 72.6437 73.4198 91 50.5 91C27.5802 91 9 72.6437 9 50C9 27.3563 27.5802 9 50.5 9C73.4198 9 92 27.3563 92 50Z" stroke="white"/>
+                                    </g>
+                                    <defs>
+                                    <clipPath id="clip0_6_60">
+                                    <rect width="101" height="100" rx="50" fill="white"/>
+                                    </clipPath>
+                                    </defs>
+                                    </svg>
 
-                            </div></div>
-                    </div>
+                                </div></div>
+                        </div>
 
-                    <div *ngSwitchDefault>
-                        <!-- display nothing if its not in the list -->
-                    </div>
+                        <div *ngSwitchDefault>
+                            <!-- display nothing if its not in the list -->
+                        </div>
+                </div>
+                </div>
+                <app-piano-roll></app-piano-roll>
             </div>
-            </div>
-         <app-piano-roll></app-piano-roll>
 
         </div>
 
@@ -156,82 +206,285 @@
 
 
     </mat-card>
-    <br>
-    <mat-card class="ui-section">
+    <!-- Groups Section  -->
+    <mat-card class="section">
         <mat-card-header>
             <mat-card-title>Samples</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
+                <mat-icon>add</mat-icon>
+            </button>
         </mat-card-header>
 
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add element to ui">
-            <mat-icon>add</mat-icon>
-        </button>
-        <mat-menu #addSample="matMenu">
-            <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
-        </mat-menu>
+        <div formGroupName="groupEnvelope">
+            <mat-card-header>
+                <mat-card-subtitle>Group Envelope</mat-card-subtitle>
+            </mat-card-header>
+            <div class="horizontal-fields">
+                <mat-form-field matTooltip="{{getInfo('attack')}}" matTooltipPosition="above">
+                    <mat-label>Attack</mat-label>
+                    <input matInput type="number" formControlName="attack">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('sustain')}}" matTooltipPosition="above">
+                    <mat-label>Sustain</mat-label>
+                    <input matInput type="number" formControlName="sustain">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('decay')}}" matTooltipPosition="above">
+                    <mat-label>Decay</mat-label>
+                    <input matInput type="number" formControlName="decay">
+                </mat-form-field>
+                <mat-form-field matTooltip="{{getInfo('release')}}" matTooltipPosition="above">
+                    <mat-label>Release</mat-label>
+                    <input matInput type="number" formControlName="release">
+                </mat-form-field>
+            </div>
+        
 
-<br>
+        </div>
+        
+        <br>
 
-<section formArrayName="groups" class="group-elements">
-    <mat-accordion class="example-headers-align">
-        <ng-container *ngFor="let element of  myForm.get('groups')['controls']; let i = index">
-            <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(myForm.value)" hideToggle>
-                <mat-expansion-panel-header class="align-icons">
-                    <mat-panel-title><b>{{i + 1}} </b>- Path: {{myForm.value.groups[i].properties.path}}</mat-panel-title>
-                    <mat-panel-description>
-
-                        <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
-
-                        <button mat-icon-button (click)="deleteItem(i, 'groups')"><mat-icon>delete_forever</mat-icon></button>
-                    </mat-panel-description>
-
-                </mat-expansion-panel-header>
-                    <div *ngFor="let item of myForm.value.groups[i].properties | keyvalue; let i = index;">
-                        <div formGroupName="properties">
-                            <div [ngSwitch]="checkType(item.value)">
-                                
-                                <mat-form-field *ngSwitchCase="'number'">
-                                    <mat-label>{{item.key}}</mat-label>
-                                    <input matInput id="i" type="number" step="1" formControlName="{{item.key}}">  
-                                </mat-form-field>
-                            
-                                <mat-form-field *ngSwitchDefault>
-                                    <mat-label>{{item.key}}</mat-label>
-                                    <input matInput id="i" type="text" formControlName="{{item.key}}">
-                                </mat-form-field>                
-                                
-
-                            </div>
-                        </div>
-                    </div>
-                
-
-
-
-            </mat-expansion-panel>
+        <section formArrayName="groups" class="group-elements">
             
-        </ng-container>
-    </mat-accordion>
+            <mat-menu #addSample="matMenu">
+                <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
+            </mat-menu>
+            <mat-accordion class="example-headers-align">
+                <ng-container *ngFor="let element of  editorForm.get('groups')['controls']; let i = index">
+                    <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
+                        <mat-expansion-panel-header class="align-icons">
+                            <mat-panel-title><b>{{i}} </b>- Path: {{editorForm.value.groups[i].properties.path}}</mat-panel-title>
+                            <mat-panel-description>
 
-</section>
+                                <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
+
+                                <button mat-icon-button (click)="deleteItem(i, 'groups')"><mat-icon>delete_forever</mat-icon></button>
+                            </mat-panel-description>
+
+                        </mat-expansion-panel-header>
+                            <div *ngFor="let item of editorForm.value.groups[i].properties | keyvalue; let i = index;">
+                                <div formGroupName="properties">
+                                    <div [ngSwitch]="checkType(item.value)">
+                                        
+                                        <mat-form-field *ngSwitchCase="'number'">
+                                            <mat-label>{{item.key}}</mat-label>
+                                            <input matInput id="i" type="number" step="1" min="0" formControlName="{{item.key}}"  matTooltip="{{getInfo(item.key, 'groups')}}">  
+                                        </mat-form-field>
+                                    
+                                        <mat-form-field *ngSwitchDefault>
+                                            <mat-label>{{item.key}}</mat-label>
+                                            <input matInput id="i" type="text" formControlName="{{item.key}}"  matTooltip="{{getInfo(item.key, 'groups')}}">
+                                        </mat-form-field>                
+                                        
+
+                                    </div>
+                                </div>
+                            </div>
+                        
+
+
+
+                    </mat-expansion-panel>
+                    
+                </ng-container>
+            </mat-accordion>
+
+        </section>
 
 
     </mat-card>
-    <br>
+    <!-- Effects Section  -->
+    <mat-card class="section">
+        <mat-card-header>
+            <mat-card-title>Effects</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addEffect" aria-label="add effect to effect chain">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-card-header>
+        
+        <mat-menu #addEffect="matMenu">
+            <ng-container *ngFor="let effect of effectsMenu; let i=index">
+                <button mat-menu-item (click)="addElement(effect.name, 'effects')">
+                    {{effect.label}}
+                </button>
+            </ng-container>
+        </mat-menu>
+    
+        <br>
+    
+        <section formArrayName="effects" class="group-elements">
+            <mat-accordion class="example-headers-align">
+                <ng-container *ngFor="let element of  editorForm.get('effects')['controls']; let i = index">
+                    <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
+                        <mat-expansion-panel-header class="align-icons">
+                            <mat-panel-title><b>{{i}} </b>- {{editorForm.value.effects[i].type}}</mat-panel-title>
+                            <mat-panel-description>
+                                {{getInfo(editorForm.value.effects[i].type, 'effects')}}
+                                <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
+    
+                                <button mat-icon-button
+                                    (click)="deleteItem(i, 'effects')"><mat-icon>delete_forever</mat-icon></button>
+                            </mat-panel-description>
+    
+                        </mat-expansion-panel-header>
+                        <div *ngFor="let item of editorForm.value.effects[i].properties | keyvalue; let i = index;">
+                            <div formGroupName="properties">
+                                <div [ngSwitch]="checkType(item.value)">
+    
+                                    <mat-form-field *ngSwitchCase="'number'">
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="number" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
+                                    </mat-form-field>
+    
+                                    <mat-form-field *ngSwitchDefault>
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
+                                    </mat-form-field>
+    
+    
+                                </div>
+                            </div>
+                        </div>
+    
+    
+    
+    
+                    </mat-expansion-panel>
+    
+                </ng-container>
+            </mat-accordion>
+    
+        </section>
+    
+    
+    </mat-card>
+    <!-- Modulators Section  -->
+    <mat-card class="section">
+        <mat-card-header>
+            <mat-card-title>Modulation</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addModulation" aria-label="add modulator">
+                <mat-icon>add</mat-icon>
+            </button>
+        </mat-card-header>
+    
+        
+        <mat-menu #addModulation="matMenu">
+            <button mat-menu-item (click)="addElement('lfo', 'modulation')">LFO</button>
+            <button mat-menu-item (click)="addElement('envelope', 'modulation')">Envelope</button>
+        </mat-menu>
+    
+        <br>
+    
+        <section formArrayName="modulation" class="group-elements">
+            <mat-accordion class="example-headers-align">
+                <ng-container *ngFor="let element of  editorForm.get('modulation')['controls']; let modIndex = index">
+                    <mat-expansion-panel [formGroupName]="modIndex" (closed)="submitForm(editorForm.value)" hideToggle>
+                        <mat-expansion-panel-header class="align-icons">
+                            <mat-panel-title><b>{{modIndex}} </b>- {{editorForm.value.modulation[modIndex].type}}</mat-panel-title>
+                            <mat-panel-description>
+    
+                                <button mat-icon-button (click)="submitForm(editorForm.value)"><mat-icon>save</mat-icon></button>
+    
+                                <button mat-icon-button
+                                    (click)="deleteItem(modIndex, 'modulation')"><mat-icon>delete_forever</mat-icon></button>
+                            </mat-panel-description>
+    
+                        </mat-expansion-panel-header> 
+                        <div *ngFor="let item of editorForm.value.modulation[modIndex].properties | keyvalue; let i = index;">
+                            <div formGroupName="properties">
+                                <div [ngSwitch]="checkType(item.value)">
+    
+                                    <mat-form-field *ngSwitchCase="'number'">
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="number" step=".1" max="1" min="0"
+                                            formControlName="{{item.key}}">
+                                    </mat-form-field>
+    
+                                    <mat-form-field *ngSwitchDefault>
+                                        <mat-label>{{item.key}}</mat-label>
+                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
+                                    </mat-form-field>
+    
+    
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div formGroupName="binding">
+                        
+                            <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
+                            <mat-menu #bindingsSelect="matMenu">
+                                <ng-container *ngFor="let parent of bindingMod; let i=index">
+                                    <button mat-menu-item [matMenuTriggerFor]="submenu">
+                                        {{parent.name}}
+                                    </button>
+                                    <mat-menu #submenu="matMenu">
+                                        <ng-container *ngFor="let type of parent.childs; let i = index">
+                                            <button mat-menu-item [matMenuTriggerFor]="param" *ngIf="type.childs" matTooltip="{{type.tooltip}}"
+                                                matTooltipPosition="above">
+                                                {{type.name}}
+                                            </button>
+                                            <button mat-menu-item *ngIf="!type.childs" matTooltip="{{type.tooltip}}"
+                                                (click)="setParams('modulation',parent.name, type.value, modIndex, type.maxValue, type.minValue)">
+                                                {{type.name}}
+                                            </button>
+                                            <mat-menu #param="matMenu">
+                                                <ng-container *ngFor="let param of type.childs; let i = index">
+                                                    <button mat-menu-item matTooltip="{{param.tooltip}}" matTooltipPosition="above"
+                                                        (click)="setParams('modulation',parent.name, param.value, modIndex, param.maxValue, param.minValue, type.name)">
+                                                        {{param.name}}
+                                                    </button>
+                                                </ng-container>
+                                            </mat-menu>
+                                        </ng-container>
+                                    </mat-menu>
+                                </ng-container>
+                        
+                            </mat-menu>
+                        
+                            <br>
+                            <label>Parameter Selected - {{editorForm.value.modulation[modIndex].binding.parameter}}</label>
+                            <br>
+                            <mat-form-field>
+                                <mat-label>Position</mat-label>
+                                <input matInput id="i" type="number" step="1" formControlName="position"
+                                    matTooltip="index of the affected element">
+                            </mat-form-field>
+                        
+                        </div>
+    
+    
+                    </mat-expansion-panel>
+    
+                </ng-container>
+            </mat-accordion>
+    
+        </section>
+    
+    
+    </mat-card>
+
+
+    <!-- End Section -->
     <mat-card>
         <mat-card-actions align="end">
                 
-            <button mat-stroked-button color="secondary" (click)="accordion.closeAll()" id="submit" type="submit">Update Code</button>            
+            <button mat-stroked-button color="secondary" id="submit" type="submit">Update Code</button>            
 
-            <a mat-stroked-button color="primary" [href]="fileUrl" download="file.dspreset" (click)="fileDownload()">Download .dsPreset</a>
+            <a mat-stroked-button color="primary" [href]="fileUrl" download="preset.dspreset" (click)="fileDownload()">Download .dsPreset</a>
         </mat-card-actions>
     </mat-card>
 
-    
+
+<pre>
+    <mat-card *ngIf="code" class="section">
+        <code [highlight]="code" id="result"></code>
+    </mat-card>
+</pre>
 
 </form>
 
-<pre>
-<mat-card>
-  <code [highlight]="" id="result"></code>
-</mat-card>
-</pre>
+
+
+
+
+

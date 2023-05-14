@@ -1,0 +1,512 @@
+[
+	{
+		"name": "Effect",
+		"childs": [
+			{
+				"name": "Effect Enabled (all effects)",
+				"value": "ENABLED",
+				"minValue": false,
+				"maxValue": true,
+				"tooltip": "effectIndex or position contains the 0-based index of the effect"
+			},
+			{
+				"name": "Filter",
+				"childs": [
+					{
+						"name": "Filter Cutoff",
+						"value": "FX_FILTER_FREQUENCY",
+						"minValue": 0.0,
+						"maxValue": 22000.0,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Filter Resonance",
+						"value": "FX_FILTER_RESONANCE",
+						"minValue": 0.0,
+						"maxValue": 2.0,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Gain",
+				"childs": [
+					{
+						"name": "Gain Level",
+						"value": "LEVEL",
+						"minValue": 0.0,
+						"maxValue": 8,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					}
+				]
+			},
+			{
+				"name": "Reverb",
+				"childs": [
+					{
+						"name": "Wet Level",
+						"value": "FX_REVERB_WET_LEVEL",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Reverb Room Size",
+						"value": "FX_REVERB_ROOM_SIZE",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Damping",
+						"value": "FX_REVERB_DAMPING",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Delay",
+				"childs": [
+					{
+						"name": "Time",
+						"value": "FX_DELAY_TIME",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Stereo Offset",
+						"value": "FX_STEREO_OFFSET",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Wet Level",
+						"value": "FX_WET_LEVEL",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{ 
+						"name": "Feedback",
+						"value": "FX_FEEDBACK",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Chorus",
+				"childs": [
+					{ 
+						"name": "Mix Level",
+						"value": "FX_MIX",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{ 
+						"name": "Mod Depth",
+						"value": "FX_MOD_DEPTH",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Mod Rate",
+						"value": "FX_MOD_RATE",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Phaser",
+				"childs": [
+					{ 
+						"name": "Mix Level",
+						"value": "FX_MIX",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{ 
+						"name": "Mod Depth",
+						"value": "FX_MOD_DEPTH",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{ 
+						"name": "Mod Rate",
+						"value": "FX_MOD_RATE",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Phaser Center Frequency",
+						"value": "FX_CENTER_FREQUENCY",
+						"minValue": 0.0,
+						"maxValue": 22000.0,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{ 
+						"name": "Feedback",
+						"value": "FX_FEEDBACK",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Convultion",
+				"childs": [
+					{
+						"name": "Convolution Mix Level",
+						"value": "FX_MIX",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					},
+					{
+						"name": "Convolution IR File",
+						"value": "FX_IR_FILE",
+						"tooltip": "effectIndex or position contains the 0-based index of the effect (path to the file)"
+					},
+					{ 
+						"name": "Mix Level",
+						"value": "FX_MIX",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "effectIndex or position contains the 0-based index of the effect"
+					}
+				]
+			},
+			{
+				"name": "Wave Folder",
+				"childs": [
+					{
+						"name": "Wave Folder Drive Level",
+						"value": "FX_DRIVE",
+						"minValue": 1,
+						"maxValue": 100,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Wave Folder Threshold",
+						"value": "FX_THRESHOLD",
+						"minValue": 1,
+						"maxValue": 100,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					}
+				]
+			},
+			{
+				"name": "Wave Shaper",
+				"childs": [
+					{
+						"name": "Wave Shaper Drive Level",
+						"value": "FX_DRIVE",
+						"minValue": 0.0,
+						"maxValue": 1000,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Wave Shaper Output Level",
+						"value": "FX_OUTPUT_LEVEL",
+						"minValue": 0.0,
+						"maxValue": 8,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Wave Shaper Drive Boost",
+						"value": "FX_DRIVE_BOOST",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "Amp",
+		"childs": [
+			{
+			"name": "Group",
+			"tooltip": "will only affect group amp",
+			"childs": [
+					{
+						"name": "Group Enabled / Disabled",
+						"value": "ENABLED",
+						"tooltip": "groupIndex or position contains the 0-based index of the group (boolean)"
+					},
+					{
+						"name": "Group Volume",
+						"value": "AMP_VOLUME",
+						"minValue": 0.0,
+						"maxValue": 16,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Tuning",
+						"value": "GROUP_TUNING",
+						"minValue": -36.0,
+						"maxValue": 36,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Pan",
+						"value": "PAN",
+						"minValue": -100,
+						"maxValue": 100,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Amplitude Velocity Tracking",
+						"value": "AMP_VEL_TRACK",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Amp Envelope Attack",
+						"value": "ENV_ATTACK",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Amp Envelope Decay",
+						"value": "ENV_DECAY",
+						"minValue": 0.0,
+						"maxValue": 25,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Amp Envelope Sustain",
+						"value": "ENV_SUSTAIN",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Amp Envelope Release",
+						"value": "ENV_RELEASE",
+						"minValue": 0.0,
+						"maxValue": 25,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					},
+					{
+						"name": "Group Glide/Portamento Time",
+						"value": "GLIDE_TIME",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "groupIndex or position contains the 0-based index of the group"
+					}
+				]
+			},
+			{
+			"name": "Instrument",
+			"tooltip": "will only affect instrument amp",
+			"childs": [
+					{
+						"name": "Global Volume",
+						"value": "AMP_VOLUME",
+						"minValue": 0.1,
+						"maxValue": 16.0,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Tuning",
+						"value": "GLOBAL_TUNING",
+						"minValue": -36.0,
+						"maxValue": 36.0,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Pan",
+						"value": "PAN",
+						"minValue": -100,
+						"maxValue": 100,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Amplitude Velocity Tracking",
+						"value": "AMP_VEL_TRACK",
+						"minValue": 0.0,
+						"maxValue": 1.0,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Attack",
+						"value": "ENV_ATTACK",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Attack Curve Shape",
+						"value": "ENV_ATTACK_CURVE",
+						"minValue": -100,
+						"maxValue": 100,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Decay",
+						"value": "ENV_DECAY",
+						"minValue": 0.0,
+						"maxValue": 25,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Decay Curve Shape",
+						"value": "ENV_DECAY_CURVE",
+						"minValue": -100,
+						"maxValue": 100,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Sustain",
+						"value": "ENV_SUSTAIN",
+						"minValue": 0.0,
+						"maxValue": 1,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Release",
+						"value": "ENV_RELEASE",
+						"minValue": 0.0,
+						"maxValue": 25,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Global Amp Envelope Release Curve Shape",
+						"value": "ENV_RELEASE_CURVE",
+						"minValue": -100,
+						"maxValue": 100,
+						"tooltip": "N/A"
+					},
+					{
+						"name": "Glide/Portamento Time",
+						"value": "GLIDE_TIME",
+						"minValue": 0.0,
+						"maxValue": 10,
+						"tooltip": "N/A"
+					}
+				]
+			},
+			{
+			"name": "Tags",
+			"tooltip": "",
+			"childs": [
+				{
+					"name": "Tag Enabled",
+					"value": "TAG_ENABLED",
+					"minValue": true,
+					"maxValue": false,
+					"tooltip": "identifier contains the tag name"
+				},
+				{
+					"name": "Tag Volume",
+					"value": "TAG_VOLUME",
+					"minValue": 0.0,
+					"maxValue": 16,
+					"tooltip": "identifier contains the tag name"
+				}
+				]
+			}
+		]
+	},
+	{
+		"name": "Modulator",
+		"childs": [
+		
+			{
+				"name": "Modulator Amount (Depth)",
+				"value": "MOD_AMOUNT",
+				"minValue": 0.0,
+				"maxValue": 1,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "LFO Modulator Rate (or Frequency)",
+				"value": "FREQUENCY",
+				"minValue": 0.0,
+				"maxValue": 100,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Attack",
+				"value": "ENV_ATTACK",
+				"minValue": 0.0,
+				"maxValue": 10,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Attack Curve Shape",
+				"value": "ENV_ATTACK_CURVE",
+				"minValue": -100,
+				"maxValue": 100,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Decay",
+				"value": "ENV_DECAY",
+				"minValue": 0.0,
+				"maxValue": 25,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Decay Curve Shape",
+				"value": "ENV_DECAY_CURVE",
+				"minValue": -100,
+				"maxValue": 100,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Sustain",
+				"value": "ENV_SUSTAIN",
+				"minValue": 0.0,
+				"maxValue": 1,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Release",
+				"value": "ENV_RELEASE",
+				"minValue": 0.0,
+				"maxValue": 25,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			},
+			{
+				"name": "Envelope Modulator Release Curve Shape",
+				"value": "ENV_RELEASE_CURVE",
+				"minValue": -100,
+				"maxValue": 100,
+				"tooltip": "Index contains the 0-based index of the modulator in question"
+			}
+			
+		]
+	}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
