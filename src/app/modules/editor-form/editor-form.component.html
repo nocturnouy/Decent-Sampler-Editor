@@ -93,7 +93,7 @@
 
                                 </div>
 
-                                <div formGroupName="binding">
+                                <div formGroupName="binding" *ngIf="editorForm.value.ui[uiIndex].type !== 'keyboard'">
                               
                                     <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
                                     <mat-menu #bindingsSelect="matMenu">
