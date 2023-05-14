@@ -7,8 +7,11 @@ THIS PROJECT IS STILL IN EARLY DEVELOPMENT
 
 For more information about Decent Sampler please visit the [official DS website](https://www.decentsamples.com)
 
+You can check a live version [here](https://ds.nocturno.com.uy/) 
+
 
 -----------
+# Setting up a local enviroment
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.7.
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 
 @Component({
@@ -8,6 +8,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChangelogComponent {
  
-  codeUrl = 'https://raw.githubusercontent.com/nocturnouy/Decent-Sampler-Editor/development/CHANGELOG.md'
+  codeUrl = 'https://raw.githubusercontent.com/nocturnouy/Decent-Sampler-Editor/main/CHANGELOG.md'
 
 }

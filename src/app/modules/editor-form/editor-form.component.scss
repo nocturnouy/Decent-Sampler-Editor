@@ -18,6 +18,12 @@
         flex-shrink: 1;
         flex-basis: auto;
     }
+    mat-card-header {
+        margin-bottom: 10px;
+         button {
+             transform: translate(10px, -5px);
+         }
+    }
 }
 
 

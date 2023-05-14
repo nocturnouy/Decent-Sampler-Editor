@@ -9,7 +9,8 @@ import { ChangelogComponent } from '../changelog/changelog.component';
 
 
 
-import bindingJson from '../../../assets/binding.json';
+import bindingEffects from '../../../assets/binding.json';
+import bindingMod from '../../../assets/binding-mod.json';
 import effectsJson from '../../../assets/effects.json';
 import { TutorialComponent } from '../tutorial/tutorial.component';
 
@@ -45,7 +46,9 @@ export class EditorFormComponent implements OnInit {
   uiDisplayy: any;
 
 //put this into a separate json and import it
-  bindingMenu: any = bindingJson
+  bindingEffects: any = bindingEffects
+  bindingMod: any = bindingMod
+
   effectsMenu: any = effectsJson
 
   constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog) {
@@ -88,8 +91,8 @@ export class EditorFormComponent implements OnInit {
   }
 
 
-  setParams(name: string, value: string, uiIndex: number, max: number, min: number, type?: string) {
-    const getControls = this.editorForm.get('ui')['controls']
+  setParams(section: string, name: string, value: string, uiIndex: number, max: number, min: number, type?: string) {
+    const getControls = this.editorForm.get(section)['controls']
     const binding = getControls[uiIndex].controls.binding
 
 
@@ -108,7 +111,7 @@ export class EditorFormComponent implements OnInit {
     let element: any
 
     
-    if (key === 'knob'){
+    if (key === 'knob' || key === 'lfo'){
       element = this.fb.group({
         type: key,
         properties: this.getProperties(key),
@@ -159,11 +162,6 @@ export class EditorFormComponent implements OnInit {
         maxValue:1.0 ,
         value:0.1
       })
-    } else if (key === 'slider') {
-      properties = this.fb.group({
-        sliderX: 0,
-        sliderY: 0
-      })
     } else if (key === 'keyboard') {
       properties = this.fb.group({
         lowNote: 0,
@@ -175,7 +173,9 @@ export class EditorFormComponent implements OnInit {
         loNote: 'C0',
         hiNote:'C6',
         rootNote:'C3',
-        path: "samples/C4.wav"
+        path: "samples/C4.wav",
+        loopStart:0,
+        loopEnd:100000
       })
     } else if (key === 'lfo') {
       properties = this.fb.group({
@@ -234,16 +234,27 @@ export class EditorFormComponent implements OnInit {
         uiHeight: 'This element is disabled for now',
         lowNote: 'starter note to apply color, must be a CC number (0 to 127)',
         highNote: 'end note to apply color, must be a CC number (0 to 127)',
-        level: 'The amount of gain to be applied expressed as a linear number. In other words, gain of 0.5 reduces sound by 50% (this is equivalent to -6dB). A value of 2.0 doubles the volume of the sound (equivalent to +6dB)'
+        level: 'The amount of gain to be applied expressed as a linear number. In other words, gain of 0.5 reduces sound by 50% (this is equivalent to -6dB). A value of 2.0 doubles the volume of the sound (equivalent to +6dB) -range: 0 - 8.0, where 1.0 is no change.'
       },
       groups: {
         loNote: 'can be a cc number or a note name (ex: C3 or 60)',
         hiNote: 'can be a cc number or a note name (ex: C3 or 60)',
         rootNote: 'can be a cc number or a note name (ex: C3 or 60)',
         path: 'the relative path to the sample',
+        loopStart: 'The frame/sample position of the start of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: 0',
+        loopEnd: 'The frame/sample position of the end of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: the file’s length in samples minus 1.'
       },
       effects: {
-        gain: 'value range is 0 to 8.0, where 1.0 is no change'
+        filter: 'A 2-pole resonance filter that can be either a lowpass, bandpass, or highpass filter',
+        gain: 'Applies a volume boost or cut to the output signal.',
+        reverb:'',
+        delay:'',
+        chorus:'',
+        phaser:'',
+        convolution:'This effect allows you to use a convolution reverb or amp simulation to your sample library. Depending on the length of the impulse response, the convolution effect can use substantial CPU.',
+        wave_folder: 'Introduced in version 1.7.2. This effect allows you to fold a waveform back on itself. This is very useful for generating additional harmonic content.',
+        wave_shaper: 'Introduced in version 1.7.2. This effect allows you to distort an audio signal. This is very useful for generating additional harmonic content.'
+
 
       }
       
@@ -280,12 +291,10 @@ export class EditorFormComponent implements OnInit {
     document.getElementById('submit').click()
     
     let formValue = x;
-    console.log(x)
     this.colorKeys(this.editorForm.value.ui)
     
     this.code = ` <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.0.0">
-      <!-- TODO: once width and height for the ui gets enabled I should replace this with the get value of those controls -->
       <ui width="${this.uiDisplayx}" height="${this.uiDisplayy}" layoutMode="relative" bgMode="top_left">
       <tab name="main"> 
         ${formValue.ui.map(element =>  {
@@ -338,7 +347,7 @@ export class EditorFormComponent implements OnInit {
               el = `<lfo 
                           ${Object.entries(element.properties).map(([key, val]) => {
                             return ` ${key}="${val}"`
-                          }).join('') }
+                          }).join('') }>
          
                           <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
                     </lfo>

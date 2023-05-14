@@ -1,6 +1,6 @@
 
 <mat-card-actions align="end">
-    <button mat-button (click)="openDialog('changelog')">v0.0.0 Changelog</button>
+    <button mat-button (click)="openDialog('changelog')">v0.1.0</button>
 
     <button mat-button (click)="openDialog('tutorial')">How To Use</button>
 </mat-card-actions>
@@ -33,10 +33,11 @@
             <ng-container formArrayName="ui" class="ui-elements">
                 <mat-card-header>
                     <mat-card-subtitle>UI Elements</mat-card-subtitle>
-                </mat-card-header>
-                    <button mat-icon-button color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
+                    <button mat-mini-fab color="primary" [matMenuTriggerFor]="addUI" aria-label="add element to ui">
                         <mat-icon>add</mat-icon>
                     </button>
+                </mat-card-header>
+                    
                     <mat-menu #addUI="matMenu">
                         <button mat-menu-item (click)="addElement('knob', 'ui')">Knob</button>
                         <button mat-menu-item (click)="addElement('keyboard', 'ui')">Key Color</button>
@@ -51,7 +52,7 @@
                                 <mat-panel-title><b>{{uiIndex}} </b>- Label: {{editorForm.value.ui[uiIndex].properties.label || editorForm.value.ui[uiIndex].type}}</mat-panel-title>
                                 <mat-panel-description>
 
-                                    <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
+                                    <button mat-icon-button (click)="submitForm(editorForm.value)" ><mat-icon>save</mat-icon></button>
 
                                     <button mat-icon-button (click)="deleteItem(uiIndex, 'ui')"><mat-icon>delete_forever</mat-icon></button>
                                 </mat-panel-description>
@@ -96,7 +97,7 @@
                               
                                     <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
                                     <mat-menu #bindingsSelect="matMenu">
-                                        <ng-container *ngFor="let parent of bindingMenu; let i=index">
+                                        <ng-container *ngFor="let parent of bindingEffects; let i=index">
                                             <button mat-menu-item [matMenuTriggerFor]="submenu">
                                                 {{parent.name}}
                                             </button>
@@ -105,13 +106,13 @@
                                                     <button mat-menu-item [matMenuTriggerFor]="param" *ngIf="type.childs" matTooltip="{{type.tooltip}}"  matTooltipPosition="above">
                                                         {{type.name}}
                                                     </button>
-                                                    <button mat-menu-item *ngIf="!type.childs" matTooltip="{{type.tooltip}}" (click)="setParams(parent.name, type.value, uiIndex, type.maxValue, type.minValue)">
+                                                    <button mat-menu-item *ngIf="!type.childs" matTooltip="{{type.tooltip}}" (click)="setParams('ui',parent.name, type.value, uiIndex, type.maxValue, type.minValue)">
                                                         {{type.name}}
                                                     </button>
                                                     <mat-menu #param="matMenu">
                                                         <ng-container *ngFor="let param of type.childs; let i = index">
                                                             <button mat-menu-item matTooltip="{{param.tooltip}}"  matTooltipPosition="above"
-                                                                (click)="setParams(parent.name, param.value, uiIndex, param.maxValue, param.minValue, type.name)">
+                                                                (click)="setParams('ui',parent.name, param.value, uiIndex, param.maxValue, param.minValue, type.name)">
                                                                 {{param.name}}
                                                             </button>
                                                         </ng-container>
@@ -209,6 +210,9 @@
     <mat-card class="section">
         <mat-card-header>
             <mat-card-title>Samples</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
+                <mat-icon>add</mat-icon>
+            </button>
         </mat-card-header>
 
         <div formGroupName="groupEnvelope">
@@ -240,9 +244,7 @@
         <br>
 
         <section formArrayName="groups" class="group-elements">
-            <button mat-icon-button color="primary" [matMenuTriggerFor]="addSample" aria-label="add sample to group">
-                <mat-icon>add</mat-icon>
-            </button>
+            
             <mat-menu #addSample="matMenu">
                 <button mat-menu-item (click)="addElement('sample', 'groups')">Sample</button>
             </mat-menu>
@@ -294,10 +296,11 @@
     <mat-card class="section">
         <mat-card-header>
             <mat-card-title>Effects</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addEffect" aria-label="add effect to effect chain">
+                <mat-icon>add</mat-icon>
+            </button>
         </mat-card-header>
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addEffect" aria-label="add effect to effect chain">
-            <mat-icon>add</mat-icon>
-        </button>
+        
         <mat-menu #addEffect="matMenu">
             <ng-container *ngFor="let effect of effectsMenu; let i=index">
                 <button mat-menu-item (click)="addElement(effect.name, 'effects')">
@@ -358,11 +361,12 @@
     <mat-card class="section">
         <mat-card-header>
             <mat-card-title>Modulation</mat-card-title>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="addModulation" aria-label="add modulator">
+                <mat-icon>add</mat-icon>
+            </button>
         </mat-card-header>
     
-        <button mat-icon-button color="primary" [matMenuTriggerFor]="addModulation" aria-label="add effect to effect chain">
-            <mat-icon>add</mat-icon>
-        </button>
+        
         <mat-menu #addModulation="matMenu">
             <button mat-menu-item (click)="addElement('lfo', 'modulation')">LFO</button>
             <button mat-menu-item (click)="addElement('envelope', 'modulation')">Envelope</button>
@@ -372,20 +376,20 @@
     
         <section formArrayName="modulation" class="group-elements">
             <mat-accordion class="example-headers-align">
-                <ng-container *ngFor="let element of  editorForm.get('modulation')['controls']; let i = index">
-                    <mat-expansion-panel [formGroupName]="i" (closed)="submitForm(editorForm.value)" hideToggle>
+                <ng-container *ngFor="let element of  editorForm.get('modulation')['controls']; let modIndex = index">
+                    <mat-expansion-panel [formGroupName]="modIndex" (closed)="submitForm(editorForm.value)" hideToggle>
                         <mat-expansion-panel-header class="align-icons">
-                            <mat-panel-title><b>{{i}} </b>- {{editorForm.value.modulation[i].type}}</mat-panel-title>
+                            <mat-panel-title><b>{{modIndex}} </b>- {{editorForm.value.modulation[modIndex].type}}</mat-panel-title>
                             <mat-panel-description>
     
-                                <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
+                                <button mat-icon-button (click)="submitForm(editorForm.value)"><mat-icon>save</mat-icon></button>
     
                                 <button mat-icon-button
-                                    (click)="deleteItem(i, 'modulation')"><mat-icon>delete_forever</mat-icon></button>
+                                    (click)="deleteItem(modIndex, 'modulation')"><mat-icon>delete_forever</mat-icon></button>
                             </mat-panel-description>
     
                         </mat-expansion-panel-header> 
-                        <div *ngFor="let item of editorForm.value.modulation[i].properties | keyvalue; let i = index;">
+                        <div *ngFor="let item of editorForm.value.modulation[modIndex].properties | keyvalue; let i = index;">
                             <div formGroupName="properties">
                                 <div [ngSwitch]="checkType(item.value)">
     
@@ -405,7 +409,48 @@
                             </div>
                         </div>
     
-    
+                        <div formGroupName="binding">
+                        
+                            <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
+                            <mat-menu #bindingsSelect="matMenu">
+                                <ng-container *ngFor="let parent of bindingMod; let i=index">
+                                    <button mat-menu-item [matMenuTriggerFor]="submenu">
+                                        {{parent.name}}
+                                    </button>
+                                    <mat-menu #submenu="matMenu">
+                                        <ng-container *ngFor="let type of parent.childs; let i = index">
+                                            <button mat-menu-item [matMenuTriggerFor]="param" *ngIf="type.childs" matTooltip="{{type.tooltip}}"
+                                                matTooltipPosition="above">
+                                                {{type.name}}
+                                            </button>
+                                            <button mat-menu-item *ngIf="!type.childs" matTooltip="{{type.tooltip}}"
+                                                (click)="setParams('modulation',parent.name, type.value, modIndex, type.maxValue, type.minValue)">
+                                                {{type.name}}
+                                            </button>
+                                            <mat-menu #param="matMenu">
+                                                <ng-container *ngFor="let param of type.childs; let i = index">
+                                                    <button mat-menu-item matTooltip="{{param.tooltip}}" matTooltipPosition="above"
+                                                        (click)="setParams('modulation',parent.name, param.value, modIndex, param.maxValue, param.minValue, type.name)">
+                                                        {{param.name}}
+                                                    </button>
+                                                </ng-container>
+                                            </mat-menu>
+                                        </ng-container>
+                                    </mat-menu>
+                                </ng-container>
+                        
+                            </mat-menu>
+                        
+                            <br>
+                            <label>Parameter Selected - {{editorForm.value.modulation[modIndex].binding.parameter}}</label>
+                            <br>
+                            <mat-form-field>
+                                <mat-label>Position</mat-label>
+                                <input matInput id="i" type="number" step="1" formControlName="position"
+                                    matTooltip="index of the affected element">
+                            </mat-form-field>
+                        
+                        </div>
     
     
                     </mat-expansion-panel>
@@ -425,7 +470,7 @@
                 
             <button mat-stroked-button color="secondary" id="submit" type="submit">Update Code</button>            
 
-            <a mat-stroked-button color="primary" [href]="fileUrl" download="file.dspreset" (click)="fileDownload()">Download .dsPreset</a>
+            <a mat-stroked-button color="primary" [href]="fileUrl" download="preset.dspreset" (click)="fileDownload()">Download .dsPreset</a>
         </mat-card-actions>
     </mat-card>
 
