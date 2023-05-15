@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # [0.1.2]
 
+## Added
+- Bandpass and Highpass filters
+- More Tooltips (some of the names repeat in different items and creates conflict)
+
+
+## Improvements
+- Moved tooltip list and properties list to JSON files
+- Improved .dspreset structure
+
 ## Bug Fixes
 
 - Keyboard Color not painting (issue #4)
 - Envelope binding not being added to control group
+- Modulation binding
 
 # [0.1.1]
 
