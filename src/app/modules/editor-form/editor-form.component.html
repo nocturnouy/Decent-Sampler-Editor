@@ -1,6 +1,6 @@
 
 <mat-card-actions align="end">
-    <button mat-button (click)="openDialog('changelog')">v0.1.0</button>
+    <button mat-button (click)="openDialog('changelog')">v0.1.2</button>
 
     <button mat-button (click)="openDialog('tutorial')">How To Use</button>
 </mat-card-actions>
@@ -395,13 +395,13 @@
     
                                     <mat-form-field *ngSwitchCase="'number'">
                                         <mat-label>{{item.key}}</mat-label>
-                                        <input matInput id="i" type="number" step=".1" max="1" min="0"
+                                        <input matInput id="i" type="number" step=".1" matTooltip="{{getInfo(item.key)}}"
                                             formControlName="{{item.key}}">
                                     </mat-form-field>
     
                                     <mat-form-field *ngSwitchDefault>
                                         <mat-label>{{item.key}}</mat-label>
-                                        <input matInput id="i" type="text" formControlName="{{item.key}}">
+                                        <input matInput id="i" type="text" formControlName="{{item.key}}" matTooltip="{{getInfo(item.key)}}">
                                     </mat-form-field>
     
     
@@ -448,6 +448,14 @@
                                 <mat-label>Position</mat-label>
                                 <input matInput id="i" type="number" step="1" formControlName="position"
                                     matTooltip="index of the affected element">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Output Min</mat-label>
+                                <input matInput id="i" type="number" step="1" formControlName="translationOutputMin" matTooltip="{{getInfo('translationOutputMin')}}">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Output Max</mat-label>
+                                <input matInput id="i" type="number" step="1" formControlName="translationOutputMax" matTooltip="{{getInfo('translationOutputMax')}}">
                             </mat-form-field>
                         
                         </div>

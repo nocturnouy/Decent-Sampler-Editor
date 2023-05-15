@@ -1,10 +1,25 @@
 [{
-	"name": "filter",
-	"label": "Filter",
+	"name": "lowpass",
+	"label": "Lowpass Filter",
 	"properties": {
-		"type":  "lowpass",
         "resonance":  0.7,
         "frequency":  22000
+	}
+},
+{
+	"name": "bandpass",
+	"label": "Bandpass Filter",
+	"properties": {
+		"resonance": 0.7,
+		"frequency": 22000
+	}
+},
+{
+	"name": "highpass",
+	"label": "Highpass Filter",
+	"properties": {
+		"resonance": 0.7,
+		"frequency": 22000
 	}
 },
 {

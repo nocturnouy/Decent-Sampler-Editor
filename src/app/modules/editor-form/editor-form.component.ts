@@ -6,13 +6,16 @@ import { MatAccordion } from '@angular/material/expansion';
 import { MatDialog } from '@angular/material/dialog';
 
 import { ChangelogComponent } from '../changelog/changelog.component';
+import { TutorialComponent } from '../tutorial/tutorial.component';
+
 
 
 
 import bindingEffects from '../../../assets/binding.json';
 import bindingMod from '../../../assets/binding-mod.json';
 import effectsJson from '../../../assets/effects.json';
-import { TutorialComponent } from '../tutorial/tutorial.component';
+import tooltipsJson from '../../../assets/tooltips.json';
+import propertiesJson from '../../../assets/properties.json';
 
 
 declare function install(): any;
@@ -95,7 +98,6 @@ export class EditorFormComponent implements OnInit {
     const getControls = this.editorForm.get(section)['controls']
     const binding = getControls[uiIndex].controls.binding
 
-
     binding.patchValue({
       'level': (type === 'Group') ? 'group' : 'instrument',
       'parameter': value,
@@ -109,9 +111,8 @@ export class EditorFormComponent implements OnInit {
 
   addElement(key: any,parent: any) {
     let element: any
-
     
-    if (key === 'knob' || key === 'lfo'){
+    if (key === 'knob' || key === 'lfo' || key === 'envelope'){
       element = this.fb.group({
         type: key,
         properties: this.getProperties(key),
@@ -120,8 +121,8 @@ export class EditorFormComponent implements OnInit {
           level: '',
           position: 0,
           parameter: '',
-          minValue:0,
-          maxValue:1
+          translationOutputMin:0,
+          translationOutputMax:1
         }, { updateOn: 'submit' })
       })
     } else if (parent === 'effects'){
@@ -146,54 +147,11 @@ export class EditorFormComponent implements OnInit {
 
 
   getProperties(key: string) {
-    let properties: any;
-    if (key === 'knob') {
-      properties = this.fb.group({
-        x: 0,
-        y: 0,
-        //width: 90,
-        //textSize: 16,
-        //textColor:"AA000000" ,
-        //trackForegroundColor:"CC000000" ,
-        //trackBackgroundColor:"66999999" ,
-        label:"Knob Name" ,
-        //type:"float" ,
-        minValue:0.0 ,
-        maxValue:1.0 ,
-        value:0.1
-      })
-    } else if (key === 'keyboard') {
-      properties = this.fb.group({
-        lowNote: 0,
-        highNote: 11,
-        color: 'FF0000FF'
-      })
-    } else if (key === 'sample') {
-      properties = this.fb.group({
-        loNote: 'C0',
-        hiNote:'C6',
-        rootNote:'C3',
-        path: "samples/C4.wav",
-        loopStart:0,
-        loopEnd:100000
-      })
-    } else if (key === 'lfo') {
-      properties = this.fb.group({
-        shape: 'sine',
-        frequency: 0.3,
-        scope: 'global',
-        modAmount: 1
-      })
-    } else if (key === 'envelope') {
-      properties = this.fb.group({
-        attack:0,
-        decay:0,
-        sustain:1,
-        release:0,
-        modAmount:1,
-        scope:'global'
-      })
-    }
+    const property = propertiesJson.filter(e => e.key === key).map(e => e.properties)[0]
+    let properties: any = this.fb.group(
+      property
+    )
+    
 
     return properties;
   }
@@ -226,44 +184,11 @@ export class EditorFormComponent implements OnInit {
     debugger
   }
   
-  // TODO: check why this is triggering constantly / its a known bug, could not found solution
+ 
   getInfo(key:any, parent?:any) {
-    const info = {
-      controls: {
-        uiWidth: 'This element is disabled for now',
-        uiHeight: 'This element is disabled for now',
-        lowNote: 'starter note to apply color, must be a CC number (0 to 127)',
-        highNote: 'end note to apply color, must be a CC number (0 to 127)',
-        level: 'The amount of gain to be applied expressed as a linear number. In other words, gain of 0.5 reduces sound by 50% (this is equivalent to -6dB). A value of 2.0 doubles the volume of the sound (equivalent to +6dB) -range: 0 - 8.0, where 1.0 is no change.'
-      },
-      groups: {
-        loNote: 'can be a cc number or a note name (ex: C3 or 60)',
-        hiNote: 'can be a cc number or a note name (ex: C3 or 60)',
-        rootNote: 'can be a cc number or a note name (ex: C3 or 60)',
-        path: 'the relative path to the sample',
-        loopStart: 'The frame/sample position of the start of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: 0',
-        loopEnd: 'The frame/sample position of the end of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: the file’s length in samples minus 1.'
-      },
-      effects: {
-        filter: 'A 2-pole resonance filter that can be either a lowpass, bandpass, or highpass filter',
-        gain: 'Applies a volume boost or cut to the output signal.',
-        reverb:'',
-        delay:'',
-        chorus:'',
-        phaser:'',
-        convolution:'This effect allows you to use a convolution reverb or amp simulation to your sample library. Depending on the length of the impulse response, the convolution effect can use substantial CPU.',
-        wave_folder: 'Introduced in version 1.7.2. This effect allows you to fold a waveform back on itself. This is very useful for generating additional harmonic content.',
-        wave_shaper: 'Introduced in version 1.7.2. This effect allows you to distort an audio signal. This is very useful for generating additional harmonic content.'
-
-
-      }
-      
-      
-      
-    }
+    const info = tooltipsJson
     
     return info[parent || 'controls'][key as keyof typeof info]
-
   }
 
 
@@ -275,13 +200,12 @@ export class EditorFormComponent implements OnInit {
     Array.from(document.querySelectorAll('.piano-keys i'))
       .forEach(e => e.removeAttribute('style'));
 
-    keys.map((key: { properties: { loNote: any; hiNote: any; color: any; }; }) => {
-      let loNote = key.properties.loNote
-      let hiNote = key.properties.hiNote
+    keys.map((key: { properties: { lowNote: any; highNote: any; color: any; }; }) => {
+      let lowNote = key.properties.lowNote
+      let highNote = key.properties.highNote
       let color = key.properties.color
 
-      for (let step = loNote; step <= hiNote; step++) {
-        console.log(color)
+      for (let step = lowNote; step <= highNote; step++) {
         document.getElementById('cc-' + step)?.setAttribute('style', 'background-color: #' + color)
       }
     })
@@ -294,7 +218,7 @@ export class EditorFormComponent implements OnInit {
     this.colorKeys(this.editorForm.value.ui)
     
     this.code = ` <?xml version="1.0" encoding="UTF-8"?>
-    <DecentSampler minVersion="1.0.0">
+    <DecentSampler minVersion="1.7.2">
       <ui width="${this.uiDisplayx}" height="${this.uiDisplayy}" layoutMode="relative" bgMode="top_left">
       <tab name="main"> 
         ${formValue.ui.map(element =>  {
@@ -344,12 +268,15 @@ export class EditorFormComponent implements OnInit {
           ${formValue.modulation.map(element =>  {
             let el:any
             if(element.type === 'lfo'){
-              el = `<lfo 
-                          ${Object.entries(element.properties).map(([key, val]) => {
+              el = `<lfo ${Object.entries(element.properties).map(([key, val]) => {
                             return ` ${key}="${val}"`
                           }).join('') }>
          
-                          <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
+                          <binding ${Object.entries(element.binding).map(([key, val]) => {
+                            return ` ${key}="${val}"`
+                          }).join('') }
+                          modBehavior="add" 
+                          translation="linear" />
                     </lfo>
                           `
             }
@@ -363,7 +290,11 @@ export class EditorFormComponent implements OnInit {
                             return ` ${key}="${val}"`
                           }).join('') }
                           />
-                          <binding type="amp" level="group" position="0" parameter="AMP_VOLUME" modBehavior="add" translation="linear" translationOutputMin="0" translationOutputMax="4.0"  />
+                          <binding ${Object.entries(element.binding).map(([key, val]) => {
+                            return ` ${key}="${val}"`
+                          }).join('') }
+                          modBehavior="add" 
+                          translation="linear" />
                     </envelope>
                     `
             }
@@ -372,17 +303,14 @@ export class EditorFormComponent implements OnInit {
       </modulators>
       <groups>
         <group ${Object.entries(formValue.groupEnvelope).map(([key, val]) => { return ` ${key}="${val}"` }).join('') } >
-        
+
           ${formValue.groups.map(element => {
             let el: any
             if (element.type === 'sample') {
-              el = `<sample 
-                          ${Object.entries(element.properties).map(([key, val]) => {
+              el =`<sample ${Object.entries(element.properties).map(([key, val]) => {
                             return ` ${key}="${val}"`
-                          }).join('') }
-      
-                          />
-                          `
+                          }).join('') }/>
+          `
             }
             return el ? el : ''
           }).join('')}
@@ -403,11 +331,22 @@ export class EditorFormComponent implements OnInit {
       <midi>
 
       </midi>
+      <!-- Made With DecentSampler Editor -->
     </DecentSampler>
     `
    
     jscolor.install()
 
+  }
+
+
+  displayPicker() {
+    jscolor.install()
+  }
+
+  openDialog(module) {
+    (module == 'changelog') ? this.dialog.open(ChangelogComponent) :
+      (module == 'tutorial') ? this.dialog.open(TutorialComponent) : ''
   }
 
   fileDownload() {
@@ -418,26 +357,17 @@ export class EditorFormComponent implements OnInit {
 
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
+
+  
   ngOnInit() : void { 
     //setting values for layout
     this.uiDisplayx = this.editorForm.get('uiProperties.width').value
     this.uiDisplayy = this.editorForm.get('uiProperties.height').value
-
-
-   
     
   }
 
   
-  displayPicker() {
-    jscolor.install()
-  }
 
-  openDialog(module) {
-    (module == 'changelog') ? this.dialog.open(ChangelogComponent):
-    (module == 'tutorial') ? this.dialog.open(TutorialComponent): ''
-
-  }
 
 }
 
