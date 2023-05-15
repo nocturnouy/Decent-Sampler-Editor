@@ -275,13 +275,12 @@ export class EditorFormComponent implements OnInit {
     Array.from(document.querySelectorAll('.piano-keys i'))
       .forEach(e => e.removeAttribute('style'));
 
-    keys.map((key: { properties: { loNote: any; hiNote: any; color: any; }; }) => {
-      let loNote = key.properties.loNote
-      let hiNote = key.properties.hiNote
+    keys.map((key: { properties: { lowNote: any; highNote: any; color: any; }; }) => {
+      let lowNote = key.properties.lowNote
+      let highNote = key.properties.highNote
       let color = key.properties.color
 
-      for (let step = loNote; step <= hiNote; step++) {
-        console.log(color)
+      for (let step = lowNote; step <= highNote; step++) {
         document.getElementById('cc-' + step)?.setAttribute('style', 'background-color: #' + color)
       }
     })
@@ -410,6 +409,16 @@ export class EditorFormComponent implements OnInit {
 
   }
 
+
+  displayPicker() {
+    jscolor.install()
+  }
+
+  openDialog(module) {
+    (module == 'changelog') ? this.dialog.open(ChangelogComponent) :
+      (module == 'tutorial') ? this.dialog.open(TutorialComponent) : ''
+  }
+
   fileDownload() {
     document.getElementById('submit')?.click()
 
@@ -418,26 +427,17 @@ export class EditorFormComponent implements OnInit {
 
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
+
+  
   ngOnInit() : void { 
     //setting values for layout
     this.uiDisplayx = this.editorForm.get('uiProperties.width').value
     this.uiDisplayy = this.editorForm.get('uiProperties.height').value
-
-
-   
     
   }
 
   
-  displayPicker() {
-    jscolor.install()
-  }
 
-  openDialog(module) {
-    (module == 'changelog') ? this.dialog.open(ChangelogComponent):
-    (module == 'tutorial') ? this.dialog.open(TutorialComponent): ''
-
-  }
 
 }
 
