@@ -1,0 +1,50 @@
+[{
+	"key": "keyboard",
+	"properties": {
+		"lowNote": 0,
+        "highNote": 11,
+        "color": "FF0000FF"
+	}
+},
+{
+	"key": "knob",
+	"properties": {
+		"x": 0,
+        "y": 0,
+        "label": "Knob Name",
+        "minValue": 0.0,
+        "maxValue": 1.0,
+        "value": 0.1
+	}
+},
+{
+	"key": "sample",
+	"properties": {
+		"loNote": "C0",
+        "hiNote":"C6",
+        "rootNote":"C3",
+        "path": "samples/C4.wav",
+        "loopStart": 0,
+        "loopEnd": 100000
+	}
+},
+{
+	"key": "lfo",
+	"properties": {
+		"shape": "sine",
+        "frequency": 0.3,
+        "scope": "global",
+        "modAmount": 1
+	}
+},
+{
+	"key": "envelope",
+	"properties": {
+		"attack": 0,
+        "decay": 0,
+        "sustain": 1,
+        "release": 0,
+        "modAmount": 1,
+        "scope": "global"
+	}
+}]

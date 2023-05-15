@@ -1,0 +1,31 @@
+{
+	"controls": {
+		"uiWidth": "This element is disabled for now",
+		"uiHeight": "This element is disabled for now",
+		"lowNote": "starter note to apply color, must be a CC number (0 to 127)",
+		"highNote": "end note to apply color, must be a CC number (0 to 127)",
+		"level": "The amount of gain to be applied expressed as a linear number. In other words, gain of 0.5 reduces sound by 50% (this is equivalent to -6dB). A value of 2.0 doubles the volume of the sound (equivalent to +6dB) -range: 0 - 8.0, where 1.0 is no change",
+		"frequency": "The speed of the LFO in cycles per second.",
+		"modAmount": "This value between 0 and 1 controls how much the modulation affects the things it is targeting. In conventional terms, this is like the modulation depth. Default value: 1.0.",
+		"scope": "Whether or not this LFO exists for all notes or whether each keypress gets its own LFO. Possible values are global (default for LFOs) and voice. If voice is chosen, a new LFO is started each time a new note is pressed."
+	},
+	"groups": {
+		"loNote": "can be a cc number or a note name (ex: C3 or 60)",
+		"hiNote": "can be a cc number or a note name (ex: C3 or 60)",
+		"rootNote": "can be a cc number or a note name (ex: C3 or 60)",
+		"path": "the relative path to the sample",
+		"loopStart": "The frame/sample position of the start of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: 0",
+		"loopEnd": "The frame/sample position of the end of the sample’s loop. If this is not specified, but the sample is a wave file with embedded loop markers, those will be used instead. Default: the file’s length in samples minus 1"
+	},
+	"effects": {
+		"filter": "A 2-pole resonance filter that can be either a lowpass, bandpass, or highpass filter",
+		"gain": "Applies a volume boost or cut to the output signal.",
+		"reverb": "",
+		"delay": "",
+		"chorus": "",
+		"phaser": "",
+		"convolution": "This effect allows you to use a convolution reverb or amp simulation to your sample library. Depending on the length of the impulse response, the convolution effect can use substantial CPU.",
+		"wave_folder": "Introduced in version 1.7.2. This effect allows you to fold a waveform back on itself. This is very useful for generating additional harmonic content.",
+		"wave_shaper": "Introduced in version 1.7.2. This effect allows you to distort an audio signal. This is very useful for generating additional harmonic content"
+	}
+}
