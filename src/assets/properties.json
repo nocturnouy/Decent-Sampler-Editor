@@ -32,7 +32,7 @@
 	"key": "lfo",
 	"properties": {
 		"shape": "sine",
-        "frequency": 0.3,
+        "frequency": 1,
         "scope": "global",
         "modAmount": 1
 	}
