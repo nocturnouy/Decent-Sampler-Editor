@@ -137,3 +137,19 @@
 }
 
 
+/* accordion toggle icon*/
+
+mat-expansion-panel{
+    .element-save {
+        display: none;
+    }
+
+    &.mat-expanded {
+        .element-edit {
+            display: none;
+        }
+        .element-save {
+            display: block;
+        }
+    }
+}

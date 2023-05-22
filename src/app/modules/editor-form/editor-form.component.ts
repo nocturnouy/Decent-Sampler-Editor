@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { CdkDragEnd } from "@angular/cdk/drag-drop";
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -48,10 +48,11 @@ export class EditorFormComponent implements OnInit {
   uiDisplayx: any;
   uiDisplayy: any;
 
-//put this into a separate json and import it
+  // binding json import
   bindingEffects: any = bindingEffects
   bindingMod: any = bindingMod
 
+  // json with effect list
   effectsMenu: any = effectsJson
 
   constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog) {
@@ -69,13 +70,18 @@ export class EditorFormComponent implements OnInit {
       }, { updateOn: 'blur' }),
       groups: this.fb.array([], { updateOn: 'submit' }),
       effects: this.fb.array([],{ updateOn: 'submit' }),
-      modulation: this.fb.array([],{ updateOn: 'submit' })
+      modulation: this.fb.array([], { updateOn: 'blur' })
     }
     
     );
-
+    this.editorForm.valueChanges
+      .subscribe(value => {
+        // trigger update value changes
+        this.submitForm(value)
+      });
 
   }
+  
 
 
   get ui(): FormArray {
@@ -123,7 +129,7 @@ export class EditorFormComponent implements OnInit {
           parameter: '',
           translationOutputMin:0,
           translationOutputMax:1
-        }, { updateOn: 'submit' })
+        }, { updateOn: 'blur' })
       })
     } else if (parent === 'effects'){
       const effectProperties = effectsJson.filter(e => e.name === key).map(e => e.properties)[0]
@@ -211,11 +217,22 @@ export class EditorFormComponent implements OnInit {
     })
   }
 
+
   async submitForm(x: any) {
-    document.getElementById('submit').click()
-    
+    /* This is the huge responsible of updating everything in the code and keeping the UI in check with every Update
+    All events that need to update everytime something changes should be added here */ 
+
     let formValue = x;
-    this.colorKeys(this.editorForm.value.ui)
+
+    // updating LFO graph
+    if (formValue.modulation.length > 0){
+      this.displayWave(formValue.modulation)
+
+    }
+    // updating key colors
+    if (formValue.ui.length > 0) {
+      this.colorKeys(this.editorForm.value.ui)
+    }
     
     this.code = ` <?xml version="1.0" encoding="UTF-8"?>
     <DecentSampler minVersion="1.7.2">
@@ -359,6 +376,104 @@ export class EditorFormComponent implements OnInit {
   }
 
   
+
+  displayWave(elements) {
+    var x = 0;
+
+    elements.map((e, index)=>{
+
+
+      let f = e.properties.frequency
+      let c: any = document.getElementById("mod-" + index); // Grab canvas object
+
+      if (c != null){
+        let ctx = c.getContext("2d"); // Define canvas context
+        let w = c.width; // Canvas width => Frequency is relative to this
+        let h = c.height / 2; // Canvas height over two => Amplitude: Volume
+
+        let waveType = e.properties.shape
+
+        // missing square visualization
+        function calcWaveY(x) {
+          if (waveType === 'sine') {
+            return h - h * Math.sin(x * 2 * Math.PI * (f / w));
+          } else if (waveType === 'triangle') {
+            return 4 * h / w * Math.abs(((x * f) + (f * (w / f) / 4)) % w - (w / 2));
+          } else {
+            return null
+          }
+        }
+
+       
+
+
+        function drawWave(x) {
+          ctx.clearRect(0, 0, w, h * 2);
+
+          //draw x axis
+          ctx.beginPath(); // Draw a new path
+          ctx.strokeStyle = "#333333"; // Pick a color
+          ctx.moveTo(0, h); // Where to start drawing
+          ctx.lineTo(w, h); // Where to draw to
+          ctx.stroke(); // Draw
+
+          // draw horizontal line of current amplitude - only visible in animated version
+          ctx.beginPath(); // Draw a new path
+          ctx.moveTo(0, h); // Where to start drawing
+          ctx.strokeStyle = "#c0c0c0"; // Pick a color
+          for (var i = 0; i < x; i++) { // Loop from left side to current x
+            var y = calcWaveY(x); // Calculate y value from x
+            ctx.moveTo(i, y); // Where to start drawing
+            ctx.lineTo(x, y); // Where to draw to
+          }
+          ctx.stroke(); // Draw
+
+
+          // draw area below y
+          ctx.beginPath(); // Draw a new path
+          ctx.strokeStyle = "#7b85bd"; // Pick a color
+          for (var i = 0; i < x; i++) { // Loop from left side to current x
+            if (i / 3 == Math.round(i / 3)) { // Draw only one line each 3 pixels
+              var y = calcWaveY(i); // Calculate y value from x
+              ctx.moveTo(i, h); // Where to start drawing
+              ctx.lineTo(i, y); // Where to draw to
+            }
+          }
+          ctx.stroke(); // Draw
+
+          // draw sin curve point to point until x
+          ctx.beginPath(); // Draw a new path
+          ctx.strokeStyle = "black"; // Pick a color
+          for (var i = 0; i < x; i++) { // Loop from left side to current x
+            var y = calcWaveY(i); // Calculate y value from x
+            ctx.lineTo(i, y); // Where to draw to
+          }
+          ctx.stroke(); // Draw
+        }
+
+
+
+        drawWave(w) // fixed version not animated
+
+          // // interval not workin
+          // //Start time interval
+          // var interval = setInterval(function () {
+          //   drawWave(x); // Call draww function every cycle
+          //   x++; // Increment x by 1
+          //   if (x > w) {
+          //     //x = 0; // x cannot be more than canvas with, so back to 0
+          //     //clearInterval(interval);
+          //   }
+          // }, 6); // Loop every 6 milliseconds
+      }
+      
+
+
+    })
+    
+  }
+
+
   ngOnInit() : void { 
     //setting values for layout
     this.uiDisplayx = this.editorForm.get('uiProperties.width').value

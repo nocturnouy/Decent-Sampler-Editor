@@ -47,12 +47,15 @@
                         <script>
                             jscolor.install()
                         </script>
-                        <mat-expansion-panel [formGroupName]="uiIndex" (opened)="displayPicker()" (closed)="submitForm(editorForm.value)" hideToggle>
+                        <mat-expansion-panel [formGroupName]="uiIndex" (opened)="displayPicker()" (expandedChange)="submitForm(editorForm.value)" hideToggle>
                             <mat-expansion-panel-header class="align-icons">
                                 <mat-panel-title><b>{{uiIndex}} </b>- Label: {{editorForm.value.ui[uiIndex].properties.label || editorForm.value.ui[uiIndex].type}}</mat-panel-title>
                                 <mat-panel-description>
 
-                                    <button mat-icon-button (click)="submitForm(editorForm.value)" ><mat-icon>save</mat-icon></button>
+                                    <button mat-icon-button>
+                                        <mat-icon class="element-edit">edit</mat-icon>
+                                        <mat-icon class="element-save">save</mat-icon>
+                                    </button>
 
                                     <button mat-icon-button (click)="deleteItem(uiIndex, 'ui')"><mat-icon>delete_forever</mat-icon></button>
                                 </mat-panel-description>
@@ -255,7 +258,11 @@
                             <mat-panel-title><b>{{i}} </b>- Path: {{editorForm.value.groups[i].properties.path}}</mat-panel-title>
                             <mat-panel-description>
 
-                                <button mat-icon-button (click)="accordion.closeAll()" ><mat-icon>save</mat-icon></button>
+                                <button mat-icon-button>
+                                    <mat-icon class="element-edit">edit</mat-icon>
+                                    <mat-icon class="element-save">save</mat-icon>
+                                </button>
+
 
                                 <button mat-icon-button (click)="deleteItem(i, 'groups')"><mat-icon>delete_forever</mat-icon></button>
                             </mat-panel-description>
@@ -318,8 +325,14 @@
                         <mat-expansion-panel-header class="align-icons">
                             <mat-panel-title><b>{{i}} </b>- {{editorForm.value.effects[i].type}}</mat-panel-title>
                             <mat-panel-description>
+
                                 {{getInfo(editorForm.value.effects[i].type, 'effects')}}
-                                <button mat-icon-button (click)="accordion.closeAll()"><mat-icon>save</mat-icon></button>
+
+                                <button mat-icon-button>
+                                    <mat-icon class="element-edit">edit</mat-icon>
+                                    <mat-icon class="element-save">save</mat-icon>
+                                </button>
+
     
                                 <button mat-icon-button
                                     (click)="deleteItem(i, 'effects')"><mat-icon>delete_forever</mat-icon></button>
@@ -377,18 +390,22 @@
         <section formArrayName="modulation" class="group-elements">
             <mat-accordion class="example-headers-align">
                 <ng-container *ngFor="let element of  editorForm.get('modulation')['controls']; let modIndex = index">
-                    <mat-expansion-panel [formGroupName]="modIndex" (closed)="submitForm(editorForm.value)" hideToggle>
+                    <mat-expansion-panel [formGroupName]="modIndex" (expandedChange)="submitForm(editorForm.value)" hideToggle>
                         <mat-expansion-panel-header class="align-icons">
                             <mat-panel-title><b>{{modIndex}} </b>- {{editorForm.value.modulation[modIndex].type}}</mat-panel-title>
                             <mat-panel-description>
-    
-                                <button mat-icon-button (click)="submitForm(editorForm.value)"><mat-icon>save</mat-icon></button>
-    
+
+                                <button mat-icon-button>
+                                    <mat-icon class="element-edit">edit</mat-icon>
+                                    <mat-icon class="element-save">save</mat-icon>
+                                </button>
+        
                                 <button mat-icon-button
                                     (click)="deleteItem(modIndex, 'modulation')"><mat-icon>delete_forever</mat-icon></button>
                             </mat-panel-description>
     
                         </mat-expansion-panel-header> 
+                       
                         <div *ngFor="let item of editorForm.value.modulation[modIndex].properties | keyvalue; let i = index;">
                             <div formGroupName="properties">
                                 <div [ngSwitch]="checkType(item.value)">
@@ -408,7 +425,10 @@
                                 </div>
                             </div>
                         </div>
+
     
+                        <canvas *ngIf="editorForm.value.modulation[modIndex].type === 'lfo'" id="mod-{{modIndex}}" width="180" height="100"></canvas>
+
                         <div formGroupName="binding">
                         
                             <button mat-button [matMenuTriggerFor]="bindingsSelect">Binding</button>
@@ -459,7 +479,6 @@
                             </mat-form-field>
                         
                         </div>
-    
     
                     </mat-expansion-panel>
     
